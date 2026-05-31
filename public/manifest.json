@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "name": "Mijal Salud S.A. — Atención Médica Domiciliaria",
+  "short_name": "Mijal Salud",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A1F44",
+  "theme_color": "#00A651",
+  "description": "Atención médica domiciliaria, emergencias, urgencias, traslados e internación domiciliaria las 24 horas en CABA y GBA.",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
