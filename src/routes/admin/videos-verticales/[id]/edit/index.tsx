@@ -68,6 +68,40 @@ export default component$(() => {
   const uploadError = useSignal<string | null>(null);
   const video = videoLoader.value;
 
+  // Live Previews initialized with database values
+  const videoPreview = useSignal<string>(video.videoUrl || "");
+  const thumbnailPreview = useSignal<string>(video.thumbnailUrl || "");
+
+  const handleVideoFileChange$ = $((e: Event) => {
+    const input = e.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      videoPreview.value = URL.createObjectURL(file);
+    } else {
+      videoPreview.value = video.videoUrl || "";
+    }
+  });
+
+  const handleVideoUrlInput$ = $((e: Event) => {
+    const input = e.target as HTMLInputElement;
+    videoPreview.value = input.value;
+  });
+
+  const handleThumbnailFileChange$ = $((e: Event) => {
+    const input = e.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      thumbnailPreview.value = URL.createObjectURL(file);
+    } else {
+      thumbnailPreview.value = video.thumbnailUrl || "";
+    }
+  });
+
+  const handleThumbnailUrlInput$ = $((e: Event) => {
+    const input = e.target as HTMLInputElement;
+    thumbnailPreview.value = input.value;
+  });
+
   const handleSubmit = $(async (event: Event, element: HTMLFormElement) => {
     isUploading.value = true;
     uploadError.value = null;
@@ -198,6 +232,7 @@ export default component$(() => {
                 id="videoFile"
                 name="videoFile"
                 accept="video/mp4,video/webm"
+                onChange$={handleVideoFileChange$}
                 class="w-full border border-slate-250 bg-white rounded-xl px-4 py-2.5 text-sm outline-none font-body file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-navy-900 file:text-white file:cursor-pointer hover:file:bg-navy-800"
               />
               <p class="text-[10px] text-slate-400 mt-1 font-body">Si subís un archivo, reemplazará al archivo o URL actual.</p>
@@ -214,10 +249,26 @@ export default component$(() => {
                 id="videoUrl"
                 name="videoUrl"
                 value={video.videoUrl}
+                onInput$={handleVideoUrlInput$}
                 class="w-full bg-white border border-slate-200 focus:border-verde-500 rounded-xl px-4 py-2.5 text-sm outline-none transition-colors font-body"
                 required
               />
             </div>
+
+            {/* Video Preview */}
+            {videoPreview.value && (
+              <div class="pt-4 border-t border-slate-200 flex flex-col items-center">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 font-body block self-start">Vista previa del video:</span>
+                <div class="relative bg-black rounded-2xl overflow-hidden border border-slate-200 shadow-inner max-w-[180px]" style={{ aspectRatio: '9/16' }}>
+                  <video
+                    src={videoPreview.value}
+                    controls
+                    class="w-full h-full object-cover"
+                    preload="metadata"
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Thumbnail Section */}
@@ -230,6 +281,7 @@ export default component$(() => {
                 id="thumbnailFile"
                 name="thumbnailFile"
                 accept="image/jpeg,image/png,image/webp"
+                onChange$={handleThumbnailFileChange$}
                 class="w-full border border-slate-250 bg-white rounded-xl px-4 py-2.5 text-sm outline-none font-body file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-navy-900 file:text-white file:cursor-pointer hover:file:bg-navy-800"
               />
             </div>
@@ -245,9 +297,24 @@ export default component$(() => {
                 id="thumbnailUrl"
                 name="thumbnailUrl"
                 value={video.thumbnailUrl || ''}
+                onInput$={handleThumbnailUrlInput$}
                 class="w-full bg-white border border-slate-200 focus:border-verde-500 rounded-xl px-4 py-2.5 text-sm outline-none transition-colors font-body"
               />
             </div>
+
+            {/* Thumbnail Preview */}
+            {thumbnailPreview.value && (
+              <div class="pt-4 border-t border-slate-200 flex flex-col items-center">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 font-body block self-start">Vista previa de la portada:</span>
+                <div class="relative bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 shadow-md max-w-[180px]" style={{ aspectRatio: '9/16' }}>
+                  <img
+                    src={thumbnailPreview.value}
+                    alt="Vista previa de miniatura"
+                    class="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Settings */}

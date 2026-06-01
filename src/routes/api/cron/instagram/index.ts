@@ -66,7 +66,7 @@ export const onGet: RequestHandler = async ({ env, request, json }) => {
       return;
     }
 
-    const db = getDb(env);
+    const db = getDb();
 
     // Borramos los posts anteriores e insertamos los nuevos cacheables
     await db.delete(schema.instagramPosts);
