@@ -8,15 +8,18 @@ let _db: ReturnType<typeof drizzle<typeof schema>> | null = null;
 export function getDb() {
   if (!_db) {
     const url =
+      (globalThis as any).PRIVATE_TURSO_DATABASE_URL ||
       import.meta.env.PRIVATE_TURSO_DATABASE_URL ||
       (process as any).env?.PRIVATE_TURSO_DATABASE_URL;
+
     const authToken =
+      (globalThis as any).PRIVATE_TURSO_AUTH_TOKEN ||
       import.meta.env.PRIVATE_TURSO_AUTH_TOKEN ||
       (process as any).env?.PRIVATE_TURSO_AUTH_TOKEN;
 
     if (!url) {
       throw new Error(
-        "PRIVATE_TURSO_DATABASE_URL is not set in environment variables",
+        "PRIVATE_TURSO_DATABASE_URL is not set in environment variables (tried globalThis, import.meta.env, process.env)",
       );
     }
 

@@ -1,5 +1,5 @@
-import { component$, useSignal, $ } from "@builder.io/qwik";
-import { routeAction$, zod$, z, Link } from "@builder.io/qwik-city";
+import { component$, useSignal } from "@builder.io/qwik";
+import { routeAction$, zod$, z, Link, Form } from "@builder.io/qwik-city";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { getDb } from "~/db";
 import { users } from "~/db/schema";
@@ -55,14 +55,6 @@ export default component$(() => {
   const username = useSignal("");
   const password = useSignal("");
 
-  const handleSubmit = $(async () => {
-    if (!username.value.trim() || !password.value.trim()) return;
-    await loginAction.submit({
-      username: username.value,
-      password: password.value,
-    });
-  });
-
   return (
     <div class="min-h-screen flex items-center justify-center bg-slate-900 p-6 relative overflow-hidden font-sans">
       {/* Decorative Glow */}
@@ -84,15 +76,15 @@ export default component$(() => {
 
         {/* Card */}
         <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-8 shadow-2xl backdrop-blur-md">
-          <form
-            preventdefault:submit
-            onSubmit$={handleSubmit}
+          <Form
+            action={loginAction}
             class="space-y-5"
           >
             <div>
               <label class="block font-body font-semibold text-slate-300 text-xs mb-1.5 uppercase tracking-wider">Usuario</label>
               <input
                 type="text"
+                name="username"
                 id="login-username"
                 value={username.value}
                 onInput$={(e) => (username.value = (e.target as HTMLInputElement).value)}
@@ -106,6 +98,7 @@ export default component$(() => {
               <label class="block font-body font-semibold text-slate-300 text-xs mb-1.5 uppercase tracking-wider">Contraseña</label>
               <input
                 type="password"
+                name="password"
                 id="login-password"
                 value={password.value}
                 onInput$={(e) => (password.value = (e.target as HTMLInputElement).value)}
@@ -142,7 +135,7 @@ export default component$(() => {
                 </span>
               ) : "Ingresar"}
             </button>
-          </form>
+          </Form>
         </div>
 
         <div class="mt-6 text-center">

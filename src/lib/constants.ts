@@ -9,9 +9,9 @@ export const EMAIL_CONTACTO = "info@mijalsalud.com.ar";
 export const DIRECCION = "Buenos Aires, AMBA, Argentina";
 
 // ─── Redes sociales ───────────────────────────────────────────────────────
-export const INSTAGRAM_URL = "https://www.instagram.com/mijalsalud";
-export const LINKEDIN_URL = "https://www.linkedin.com/company/mijalsalud";
-export const FACEBOOK_URL = "https://www.facebook.com/mijalsalud";
+export const INSTAGRAM_URL = "https://www.instagram.com/mijalsalud/";
+export const LINKEDIN_URL = "https://www.linkedin.com/company/mijalsalud/";
+export const FACEBOOK_URL = "https://www.facebook.com/mijalsalud/";
 
 // ─── Estadísticas ─────────────────────────────────────────────────────────
 export const STATS = {
