@@ -26,7 +26,7 @@ export default component$(() => {
           Página no encontrada
         </h1>
         <p class="text-gris-600 font-body text-body-lg mb-8">
-          La página que buscás no existe o fue movida. 
+          La página que buscás no existe o fue movida.
           Pero si necesitás atención médica, ¡estamos disponibles 24/7!
         </p>
 
@@ -52,8 +52,6 @@ export default component$(() => {
             {[
               { label: "Servicios", href: "/servicios" },
               { label: "Empresas", href: "/empresas" },
-              { label: "Obras sociales", href: "/obras-sociales" },
-              { label: "Blog", href: "/blog" },
               { label: "Portal", href: "/portal" },
             ].map((l) => (
               <Link

@@ -21,7 +21,6 @@ const navLinks = [
   { label: "Servicios", href: "/servicios" },
   { label: "Soluciones", href: "/soluciones" },
   { label: "Empresas", href: "/empresas" },
-  { label: "Obras Sociales", href: "/obras-sociales" },
   { label: "Sumate", href: "/sumate" },
   { label: "Contacto", href: "/contacto" },
 ];
@@ -88,7 +87,9 @@ export const Header = component$(() => {
             <img
               src="/logo.png"
               alt="Mijal Salud S.A."
-              class="h-10 md:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              class="h-12 md:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              width={180}
+              height={56}
             />
           </Link>
 

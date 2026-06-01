@@ -18,11 +18,9 @@ const routes = [
   { path: "/soluciones/salud-360", priority: "0.8", changefreq: "monthly" },
   { path: "/soluciones/conecta-salud", priority: "0.7", changefreq: "monthly" },
   { path: "/empresas", priority: "0.9", changefreq: "monthly" },
-  { path: "/obras-sociales", priority: "0.8", changefreq: "monthly" },
   { path: "/nosotros", priority: "0.7", changefreq: "yearly" },
   { path: "/contacto", priority: "0.8", changefreq: "yearly" },
   { path: "/sumate", priority: "0.6", changefreq: "monthly" },
-  { path: "/blog", priority: "0.7", changefreq: "daily" },
 ];
 
 const today = new Date().toISOString().split("T")[0];
@@ -31,15 +29,15 @@ export const onGet: RequestHandler = ({ send }) => {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${routes
-  .map(
-    (r) => `  <url>
+      .map(
+        (r) => `  <url>
     <loc>${SITE}${r.path}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>${r.changefreq}</changefreq>
     <priority>${r.priority}</priority>
   </url>`,
-  )
-  .join("\n")}
+      )
+      .join("\n")}
 </urlset>`;
 
   send(

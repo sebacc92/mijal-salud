@@ -4,9 +4,7 @@ import { ContactForm } from "~/components/forms/ContactForm";
 import {
   TELEFONO_EMERGENCIAS,
   TELEFONO_HREF,
-  WHATSAPP_ATENCION,
   EMAIL_CONTACTO,
-  DIRECCION,
 } from "~/lib/constants";
 
 export default component$(() => {
@@ -35,88 +33,71 @@ export default component$(() => {
       {/* Contenido */}
       <section class="py-section bg-gris-50">
         <div class="container mx-auto px-6 lg:px-12">
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 max-w-6xl mx-auto">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 max-w-6xl mx-auto items-start">
             {/* Sidebar info */}
-            <div class="space-y-6">
-              {/* Emergencias */}
-              <div class="bg-navy-900 rounded-2xl p-6 text-white">
-                <div class="flex items-center gap-3 mb-4">
-                  <div class="w-10 h-10 bg-verde-500/20 rounded-xl flex items-center justify-center">
+            <div class="space-y-6 lg:sticky lg:top-28">
+              {/* Canales de Atención */}
+              <div class="bg-white rounded-2xl p-6 border border-gris-200 shadow-card space-y-5">
+                <h2 class="font-display font-bold text-navy-900 text-lg border-b border-gris-100 pb-3">
+                  Canales de Atención
+                </h2>
+
+                {/* Emergencias */}
+                <div class="flex items-start gap-4">
+                  <div class="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center shrink-0">
                     <span class="text-xl">🚨</span>
                   </div>
-                  <h2 class="font-display font-bold text-lg">Emergencias</h2>
-                </div>
-                <p class="text-white/60 font-body text-sm mb-4">
-                  Para situaciones urgentes, contactanos de inmediato.
-                </p>
-                <a
-                  href={TELEFONO_HREF}
-                  class="flex items-center gap-2 text-verde-400 font-display font-bold text-xl hover:text-verde-300 transition-colors"
-                >
-                  📞 {TELEFONO_EMERGENCIAS}
-                </a>
-              </div>
-
-              {/* WhatsApp */}
-              <div class="bg-white rounded-2xl p-6 border border-gris-200 shadow-card">
-                <div class="flex items-center gap-3 mb-4">
-                  <div class="w-10 h-10 bg-verde-100 rounded-xl flex items-center justify-center">
-                    <span class="text-xl">💬</span>
+                  <div>
+                    <h3 class="font-display font-bold text-navy-900 text-[14px]">Emergencias 24hs</h3>
+                    <p class="text-gris-500 font-body text-xs mt-0.5 mb-1.5">Llamado directo urgente</p>
+                    <a
+                      href={TELEFONO_HREF}
+                      class="text-red-600 hover:text-red-750 font-display font-bold text-lg transition-colors"
+                    >
+                      📞 {TELEFONO_EMERGENCIAS}
+                    </a>
                   </div>
-                  <h2 class="font-display font-bold text-navy-900 text-lg">
-                    WhatsApp
-                  </h2>
                 </div>
-                <p class="text-gris-600 font-body text-sm mb-4">
-                  Chateá con nosotros en tiempo real.
-                </p>
-                <a
-                  href={WHATSAPP_ATENCION}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="inline-flex items-center gap-2 bg-verde-500 hover:bg-verde-600 text-white font-display font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors shadow-cta"
-                >
-                  Abrir WhatsApp
-                </a>
-              </div>
 
-              {/* Email */}
-              <div class="bg-white rounded-2xl p-6 border border-gris-200 shadow-card">
-                <div class="flex items-center gap-3 mb-4">
-                  <div class="w-10 h-10 bg-navy-100 rounded-xl flex items-center justify-center">
+                {/* Email */}
+                <div class="flex items-start gap-4 pt-4 border-t border-gris-100">
+                  <div class="w-10 h-10 bg-navy-50 text-navy-500 rounded-xl flex items-center justify-center shrink-0">
                     <span class="text-xl">✉️</span>
                   </div>
-                  <h2 class="font-display font-bold text-navy-900 text-lg">
-                    Email
-                  </h2>
+                  <div>
+                    <h3 class="font-display font-bold text-navy-900 text-[14px]">Correo Electrónico</h3>
+                    <p class="text-gris-500 font-body text-xs mt-0.5 mb-1">Consultas generales y de prensa</p>
+                    <a
+                      href={`mailto:${EMAIL_CONTACTO}`}
+                      class="text-verde-600 hover:text-verde-700 font-body font-semibold text-[13.5px] transition-colors break-all"
+                    >
+                      {EMAIL_CONTACTO}
+                    </a>
+                  </div>
                 </div>
-                <a
-                  href={`mailto:${EMAIL_CONTACTO}`}
-                  class="text-verde-600 hover:text-verde-700 font-body font-medium transition-colors"
-                >
-                  {EMAIL_CONTACTO}
-                </a>
               </div>
 
-              {/* Ubicación */}
+              {/* Base Operativa */}
               <div class="bg-white rounded-2xl p-6 border border-gris-200 shadow-card">
-                <div class="flex items-center gap-3 mb-3">
-                  <div class="w-10 h-10 bg-gris-100 rounded-xl flex items-center justify-center">
+                <div class="flex items-center gap-3 mb-4">
+                  <div class="w-10 h-10 bg-verde-50 rounded-xl flex items-center justify-center">
                     <span class="text-xl">📍</span>
                   </div>
                   <h2 class="font-display font-bold text-navy-900 text-lg">
-                    Cobertura
+                    Base Operativa
                   </h2>
                 </div>
-                <p class="text-gris-600 font-body text-sm">{DIRECCION}</p>
-                <p class="text-gris-500 font-body text-xs mt-1">
-                  Ciudad de Buenos Aires y Gran Buenos Aires
+                <p class="text-gris-700 font-body font-semibold text-[14.5px] leading-relaxed mb-1">
+                  Av. Lope de Vega 960, C1407
+                </p>
+                <p class="text-gris-500 font-body text-xs">
+                  Buenos Aires - Argentina
                 </p>
               </div>
             </div>
 
             {/* Formulario */}
-            <div class="lg:col-span-2 bg-white rounded-2xl p-8 shadow-card border border-gris-100">
+            <div class="lg:col-span-2 bg-white rounded-2xl p-8 shadow-card border border-gris-100 self-start">
               <h2 class="font-display font-bold text-navy-900 text-2xl mb-2">
                 Envianos un mensaje
               </h2>
@@ -127,6 +108,35 @@ export default component$(() => {
               <ContactForm />
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Sección Dedicada para el Código QR */}
+      <section class="pb-20 bg-gris-50">
+        <div class="container mx-auto px-6 lg:px-12 flex justify-center">
+          <img
+            src="/qr.webp"
+            alt="Código QR Oficial Mijal Salud"
+            class="w-[320px] md:w-[380px] h-auto object-contain drop-shadow-md"
+            width={380}
+            height={380}
+          />
+        </div>
+      </section>
+
+      {/* Mapa de Google Maps de Ancho Completo */}
+      <section class="w-full bg-white leading-none">
+        <div class="w-full h-[450px] relative">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d105054.95820095942!2d-58.50415300000001!3d-34.630263!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcc9ca331f871b%3A0xb3c655782b68d6d5!2sMijal%20Salud%20S.A.%20%7C%20Base%20Operativa!5e0!3m2!1ses-419!2sar!4v1780291544818!5m2!1ses-419!2sar"
+            width="100%"
+            height="100%"
+            style={{ border: 0 }}
+            allowFullscreen={true}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            title="Mapa Base Operativa Mijal Salud"
+          ></iframe>
         </div>
       </section>
     </main>

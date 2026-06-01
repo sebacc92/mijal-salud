@@ -73,34 +73,6 @@ export const newsletter = sqliteTable("newsletter", {
     .notNull(),
 });
 
-// ─── BLOG POSTS ───────────────────────────────────────────────────────────
-export const posts = sqliteTable(
-  "posts",
-  {
-    id: text("id").primaryKey(),
-    slug: text("slug").notNull().unique(),
-    titulo: text("titulo").notNull(),
-    resumen: text("resumen").notNull(),
-    contenido: text("contenido").notNull(), // Markdown
-    imagen: text("imagen"),
-    categoria: text("categoria").notNull(), // 'salud' | 'prevención' | 'empresas' | 'tecnología'
-    tags: text("tags"), // JSON array serializado
-    autor: text("autor").default("Equipo Mijal Salud"),
-    publicado: integer("publicado", { mode: "boolean" }).default(false),
-    publishedAt: text("published_at"),
-    createdAt: text("created_at")
-      .default(sql`(CURRENT_TIMESTAMP)`)
-      .notNull(),
-    updatedAt: text("updated_at")
-      .default(sql`(CURRENT_TIMESTAMP)`)
-      .notNull(),
-  },
-  (table) => ({
-    slugIdx: index("posts_slug_idx").on(table.slug),
-    categoriaIdx: index("posts_categoria_idx").on(table.categoria),
-  }),
-);
-
 // ─── TESTIMONIOS ──────────────────────────────────────────────────────────
 export const testimonios = sqliteTable("testimonios", {
   id: text("id").primaryKey(),
@@ -123,8 +95,6 @@ export type Contacto = typeof contactos.$inferSelect;
 export type NewContacto = typeof contactos.$inferInsert;
 export type Postulante = typeof postulantes.$inferSelect;
 export type NewPostulante = typeof postulantes.$inferInsert;
-export type Post = typeof posts.$inferSelect;
-export type NewPost = typeof posts.$inferInsert;
 export type Testimonio = typeof testimonios.$inferSelect;
 export type NewTestimonio = typeof testimonios.$inferInsert;
 
@@ -212,3 +182,24 @@ export const partners = sqliteTable("partners", {
 
 export type Partner = typeof partners.$inferSelect;
 export type NewPartner = typeof partners.$inferInsert;
+
+// ─── CHATBOT SETTINGS (Configuración del Asistente Virtual) ──────────────────────
+export const chatbotSettings = sqliteTable("chatbot_settings", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  activo: integer("activo", { mode: "boolean" }).default(true),
+  nombre: text("nombre").default("Asistente Mijal"),
+  tono: text("tono").default("Amigable, profesional y servicial"),
+  instrucciones: text("instrucciones"),
+  conocimiento: text("conocimiento"),
+  saludo: text("saludo").default("¡Hola! Soy el asistente virtual de Mijal Salud. Estoy aquí para guiarte e informarte sobre nuestros servicios médicos domiciliarios. ¿En qué te puedo ayudar hoy?"),
+  cta: text("cta").default("Para consultas administrativas, podés escribirnos al WhatsApp oficial:"),
+  whatsapp: text("whatsapp").default("5491152731818"),
+  avatarUrl: text("avatar_url"),
+  updatedAt: text("updated_at")
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .notNull(),
+});
+
+export type ChatbotSettings = typeof chatbotSettings.$inferSelect;
+export type NewChatbotSettings = typeof chatbotSettings.$inferInsert;
+

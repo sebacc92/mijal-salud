@@ -151,10 +151,80 @@ export const useHomeLoader = routeLoader$(async () => {
       console.warn("Skipping partners query:", e);
     }
 
-    return { images, videos, partners: dbPartners };
+    // 4. Cargar testimonios con auto-seeding
+    let dbTestimonios = await db
+      .select()
+      .from(schema.testimonios)
+      .where(eq(schema.testimonios.activo, true));
+
+    if (dbTestimonios.length === 0) {
+      const seedTestimonios = [
+        {
+          id: "seed-test-1",
+          nombre: "Martina García",
+          cargo: "Gerente de RRHH",
+          empresa: "Grupo Clarín",
+          texto: "Implementamos Área Protegida para nuestros eventos internos. El equipo de Mijal Salud respondió de manera impecable en dos situaciones que se presentaron. Profesionalismo total.",
+          rating: 5,
+          avatar: "MG",
+          activo: true,
+        },
+        {
+          id: "seed-test-2",
+          nombre: "Roberto Fernández",
+          cargo: "Paciente",
+          empresa: "Buenos Aires",
+          texto: "A mi padre le dieron un turno de visita médica a domicilio en menos de 2 horas. El médico fue muy amable y profesional. Lo recomendaría a cualquier familia.",
+          rating: 5,
+          avatar: "RF",
+          activo: true,
+        },
+        {
+          id: "seed-test-3",
+          nombre: "Laura Suárez",
+          cargo: "Directora Médica",
+          empresa: "OSDE",
+          texto: "Trabajamos con Mijal Salud hace más de 8 años. Su capacidad de respuesta y la calidad de su equipo médico los hace un partner indispensable para nuestra obra social.",
+          rating: 5,
+          avatar: "LS",
+          activo: true,
+        },
+        {
+          id: "seed-test-4",
+          nombre: "Diego Morales",
+          cargo: "CEO",
+          empresa: "TechBa S.A.",
+          texto: "Contratamos el programa de Prevención Activa para nuestros 120 empleados. El ausentismo bajó un 40% en el primer trimestre. Los números hablan solos.",
+          rating: 5,
+          avatar: "DM",
+          activo: true,
+        },
+        {
+          id: "seed-test-5",
+          nombre: "Ana Benitez",
+          cargo: "Familiar",
+          empresa: "Palermo, CABA",
+          texto: "Mi mamá estuvo con internación domiciliaria por 3 semanas. El equipo de Mijal Salud la acompañó con una calidez y profesionalismo que nunca esperé. Gracias infinitas.",
+          rating: 5,
+          avatar: "AB",
+          activo: true,
+        },
+      ];
+
+      for (const test of seedTestimonios) {
+        await db.insert(schema.testimonios).values(test);
+      }
+
+      dbTestimonios = await db
+        .select()
+        .from(schema.testimonios)
+        .where(eq(schema.testimonios.activo, true));
+    }
+
+    return { images, videos, partners: dbPartners, testimonios: dbTestimonios };
   } catch (error) {
     console.error("Error loading home data:", error);
-    return { images: [], videos: [], partners: [] };
+    return { images: [], videos: [], partners: [], testimonios: [] };
   }
 });
 
@@ -168,7 +238,7 @@ export default component$(() => {
       <Stats />
       <NewServices />
       <AreaProtegida />
-      <Testimonials />
+      <Testimonials list={homeData.value.testimonios} />
       <Partners partners={homeData.value.partners} />
       <VerticalVideo videos={homeData.value.videos} />
       <Gallery images={homeData.value.images} />
