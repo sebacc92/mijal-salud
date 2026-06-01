@@ -1,4 +1,4 @@
-import { component$ } from "@builder.io/qwik";
+import { component$, useSignal, useVisibleTask$ } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
 
 interface Service {
@@ -75,73 +75,104 @@ const services: Service[] = [
 
 const colorConfig: Record<
   string,
-  { icon: string; badge: string; hover: string; glow: string }
+  { icon: string; hover: string; accent: string }
 > = {
   red: {
-    icon: "bg-red-100 text-red-600",
-    badge: "bg-red-50 text-red-600",
-    hover: "hover:border-red-300",
-    glow: "group-hover:shadow-red-100",
+    icon: "bg-red-50 text-red-600 border border-red-100/50",
+    hover: "hover:border-red-200 hover:shadow-[0_20px_50px_rgba(239,68,68,0.08)]",
+    accent: "group-hover:text-red-600",
   },
   orange: {
-    icon: "bg-orange-100 text-orange-600",
-    badge: "bg-orange-50 text-orange-600",
-    hover: "hover:border-orange-300",
-    glow: "group-hover:shadow-orange-100",
+    icon: "bg-orange-50 text-orange-600 border border-orange-100/50",
+    hover: "hover:border-orange-200 hover:shadow-[0_20px_50px_rgba(249,115,22,0.08)]",
+    accent: "group-hover:text-orange-600",
   },
   blue: {
-    icon: "bg-blue-100 text-blue-600",
-    badge: "bg-blue-50 text-blue-600",
-    hover: "hover:border-blue-300",
-    glow: "group-hover:shadow-blue-100",
+    icon: "bg-blue-50 text-blue-600 border border-blue-100/50",
+    hover: "hover:border-blue-200 hover:shadow-[0_20px_50px_rgba(59,130,246,0.08)]",
+    accent: "group-hover:text-blue-600",
   },
   navy: {
-    icon: "bg-navy-100 text-navy-700",
-    badge: "bg-navy-50 text-navy-700",
-    hover: "hover:border-navy-300",
-    glow: "group-hover:shadow-navy-100",
+    icon: "bg-navy-50 text-navy-700 border border-navy-100/50",
+    hover: "hover:border-navy-200 hover:shadow-[0_20px_50px_rgba(15,41,107,0.06)]",
+    accent: "group-hover:text-navy-700",
   },
   verde: {
-    icon: "bg-verde-100 text-verde-700",
-    badge: "bg-verde-50 text-verde-700",
-    hover: "hover:border-verde-300",
-    glow: "group-hover:shadow-verde-100",
+    icon: "bg-verde-50 text-verde-600 border border-verde-100/50",
+    hover: "hover:border-verde-200 hover:shadow-[0_20px_50px_rgba(0,166,81,0.06)]",
+    accent: "group-hover:text-verde-600",
   },
   violet: {
-    icon: "bg-violet-100 text-violet-600",
-    badge: "bg-violet-50 text-violet-600",
-    hover: "hover:border-violet-300",
-    glow: "group-hover:shadow-violet-100",
+    icon: "bg-violet-50 text-violet-600 border border-violet-100/50",
+    hover: "hover:border-violet-200 hover:shadow-[0_20px_50px_rgba(139,92,246,0.08)]",
+    accent: "group-hover:text-violet-600",
   },
 };
 
+const delays = [
+  "delay-[0ms]",
+  "delay-[100ms]",
+  "delay-[200ms]",
+  "delay-[150ms]",
+  "delay-[250ms]",
+  "delay-[350ms]",
+];
+
 export const ServicesGrid = component$(() => {
+  const isVisible = useSignal(false);
+  const containerRef = useSignal<Element>();
+
+  useVisibleTask$(({ cleanup }) => {
+    if (!containerRef.value) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          isVisible.value = true;
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(containerRef.value);
+    cleanup(() => observer.disconnect());
+  });
+
   return (
-    <section class="py-section bg-white">
+    <section ref={containerRef} class="py-section bg-white overflow-hidden">
       <div class="container mx-auto px-6 lg:px-12">
         {/* Header */}
-        <div class="text-center mb-14">
-          <div class="inline-flex items-center gap-2 bg-navy-50 text-navy-700 rounded-full px-4 py-2 mb-5 text-sm font-body font-medium">
+        <div
+          class={[
+            "text-center mb-16 transition-all duration-1000 transform",
+            isVisible.value ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8",
+          ]}
+        >
+          <div class="inline-flex items-center gap-2 bg-verde-50/80 text-verde-700 border border-verde-100/50 rounded-full px-4.5 py-2 mb-5 text-sm font-body font-semibold">
             <svg
               class="w-4 h-4"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              stroke-width="2"
             >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                stroke-width="2"
                 d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
               />
             </svg>
             Nuestros servicios
           </div>
-          <h2 class="font-display text-h2 text-navy-900 mb-4">
+          <h2 class="font-display text-h2 text-navy-900 mb-4 tracking-tight">
             Atención médica completa,{" "}
-            <span class="text-verde-500">en tu domicilio</span>
+            <span class="text-verde-600 relative inline-block">
+              en tu domicilio
+              <span class="absolute bottom-1 left-0 w-full h-1.5 bg-verde-100/60 -z-10 rounded-full" />
+            </span>
           </h2>
-          <p class="text-gris-600 text-body-lg font-body max-w-2xl mx-auto">
+          <p class="text-gris-600 text-body-lg font-body max-w-2xl mx-auto leading-relaxed">
             Desde emergencias hasta internación domiciliaria: cubrimos todas tus
             necesidades médicas con el más alto nivel de calidad.
           </p>
@@ -149,32 +180,35 @@ export const ServicesGrid = component$(() => {
 
         {/* Grid de servicios */}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map((service) => {
+          {services.map((service, index) => {
             const colors = colorConfig[service.color];
+            const delayClass = delays[index];
             return (
               <Link
                 key={service.id}
                 href={service.href}
                 class={[
-                  "group flex flex-col p-7 rounded-2xl border-2 border-gris-100 bg-white",
-                  "shadow-card hover:shadow-card-hover",
-                  "transition-all duration-300 hover:-translate-y-1",
+                  "group flex flex-col p-8 rounded-3xl border border-gris-200/80 bg-white",
+                  "shadow-[0_8px_30px_rgb(0,0,0,0.03)] hover:-translate-y-1.5",
+                  "transition-all duration-500 transform",
+                  isVisible.value ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12",
+                  delayClass,
                   colors.hover,
                 ]}
               >
                 {/* Ícono */}
                 <div
                   class={[
-                    "w-12 h-12 rounded-xl flex items-center justify-center mb-5",
+                    "w-12 h-12 rounded-xl flex items-center justify-center mb-6 transition-all duration-300",
                     colors.icon,
                   ]}
                 >
                   <svg
-                    class="w-6 h-6"
+                    class="w-6 h-6 transform group-hover:scale-110 transition-transform duration-300"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
-                    stroke-width="1.75"
+                    stroke-width="2"
                   >
                     <path
                       stroke-linecap="round"
@@ -185,26 +219,31 @@ export const ServicesGrid = component$(() => {
                 </div>
 
                 {/* Contenido */}
-                <h3 class="font-display font-bold text-navy-900 text-lg mb-2">
+                <h3 class="font-display font-bold text-navy-900 text-lg mb-2 group-hover:text-navy-950 transition-colors">
                   {service.nombre}
                 </h3>
-                <p class="text-gris-600 font-body text-sm leading-relaxed flex-grow mb-5">
+                <p class="text-gris-600 font-body text-[14.5px] leading-relaxed flex-grow mb-6">
                   {service.descripcion}
                 </p>
 
                 {/* CTA */}
-                <div class="flex items-center gap-2 text-navy-700 font-display font-semibold text-sm group-hover:text-verde-600 transition-colors">
+                <div
+                  class={[
+                    "flex items-center gap-2 text-navy-700 font-display font-semibold text-sm transition-colors",
+                    colors.accent,
+                  ]}
+                >
                   Conocer más
                   <svg
-                    class="w-4 h-4 group-hover:translate-x-1 transition-transform"
+                    class="w-4 h-4 transform group-hover:translate-x-1.5 transition-transform duration-300"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
+                    stroke-width="2"
                   >
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
-                      stroke-width="2"
                       d="M17 8l4 4m0 0l-4 4m4-4H3"
                     />
                   </svg>
@@ -215,10 +254,15 @@ export const ServicesGrid = component$(() => {
         </div>
 
         {/* CTA ver todos */}
-        <div class="text-center mt-10">
+        <div
+          class={[
+            "text-center mt-12 transition-all duration-1000 delay-[400ms] transform",
+            isVisible.value ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6",
+          ]}
+        >
           <Link
             href="/servicios"
-            class="inline-flex items-center gap-2 bg-navy-900 hover:bg-navy-800 text-white font-display font-semibold px-7 py-3.5 rounded-xl transition-all duration-200"
+            class="inline-flex items-center gap-2 bg-navy-900 hover:bg-verde-600 text-white font-display font-semibold px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5"
           >
             Ver todos los servicios
             <svg
@@ -226,11 +270,11 @@ export const ServicesGrid = component$(() => {
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              stroke-width="2"
             >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                stroke-width="2"
                 d="M17 8l4 4m0 0l-4 4m4-4H3"
               />
             </svg>
