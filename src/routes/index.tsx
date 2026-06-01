@@ -12,8 +12,9 @@ import { StaffCTA } from "~/components/home/StaffCTA";
 import { ContactCTA } from "~/components/home/ContactCTA";
 import { Gallery } from "~/components/home/Gallery";
 import { VerticalVideo } from "~/components/home/VerticalVideo";
+import { SocialFeed } from "~/components/home/SocialFeed";
 import { getDb, schema } from "~/db";
-import { asc, eq } from "drizzle-orm";
+import { asc, desc, eq } from "drizzle-orm";
 
 // Loader de datos para la página principal con auto-seeding de imágenes y videos
 export const useHomeLoader = routeLoader$(async () => {
@@ -221,10 +222,21 @@ export const useHomeLoader = routeLoader$(async () => {
         .where(eq(schema.testimonios.activo, true));
     }
 
-    return { images, videos, partners: dbPartners, testimonios: dbTestimonios };
+    // 5. Cargar posts de instagram
+    let dbInstagramPosts: any[] = [];
+    try {
+      dbInstagramPosts = await db
+        .select()
+        .from(schema.instagramPosts)
+        .orderBy(desc(schema.instagramPosts.timestamp));
+    } catch(e) {
+      console.warn("Skipping instagram query:", e);
+    }
+
+    return { images, videos, partners: dbPartners, testimonios: dbTestimonios, instagramPosts: dbInstagramPosts };
   } catch (error) {
     console.error("Error loading home data:", error);
-    return { images: [], videos: [], partners: [], testimonios: [] };
+    return { images: [], videos: [], partners: [], testimonios: [], instagramPosts: [] };
   }
 });
 
@@ -244,6 +256,7 @@ export default component$(() => {
       <Gallery images={homeData.value.images} />
       <StaffCTA />
       <ContactCTA />
+      <SocialFeed posts={homeData.value.instagramPosts} />
     </>
   );
 });

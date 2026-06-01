@@ -203,3 +203,12 @@ export const chatbotSettings = sqliteTable("chatbot_settings", {
 export type ChatbotSettings = typeof chatbotSettings.$inferSelect;
 export type NewChatbotSettings = typeof chatbotSettings.$inferInsert;
 
+// ─── INSTAGRAM POSTS (Feed desde Behold.so) ───────────────────────────────────
+export const instagramPosts = sqliteTable('instagram_posts', {
+  id: text('id').primaryKey(),
+  permalink: text('permalink').notNull(),
+  mediaUrl: text('media_url').notNull(),
+  mediaType: text('media_type'),
+  caption: text('caption'),
+  timestamp: text('timestamp'),
+});
