@@ -86,8 +86,6 @@ export const Hero = component$(() => {
           >
             Salud domiciliaria{" "}
             <span class="text-verde-400">de excelencia</span>
-            <br />
-            en Buenos Aires
           </h1>
 
           {/* Tagline rotativo */}

@@ -1,5 +1,5 @@
 import { component$ } from "@builder.io/qwik";
-import { routeLoader$, Link } from "@builder.io/qwik-city";
+import { routeLoader$ } from "@builder.io/qwik-city";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { getDb } from "~/db";
 import { leads, contactos, postulantes, newsletter, chatSessions } from "~/db/schema";

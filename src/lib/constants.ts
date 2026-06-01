@@ -1,7 +1,7 @@
 // ─── Datos de contacto ────────────────────────────────────────────────────
 export const TELEFONO_EMERGENCIAS = "011 4788-6953";
-export const TELEFONO_HREF = "tel:+541147886953";
-export const WHATSAPP_NUMERO = "5491147886953";
+export const TELEFONO_HREF = "tel:+5491132613981";
+export const WHATSAPP_NUMERO = "5491132613981";
 export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMERO}`;
 export const WHATSAPP_ATENCION = `${WHATSAPP_URL}?text=Hola!%20Necesito%20atenci%C3%B3n%20m%C3%A9dica`;
 export const WHATSAPP_EMPRESAS = `${WHATSAPP_URL}?text=Hola!%20Me%20interesa%20conocer%20las%20soluciones%20para%20empresas`;

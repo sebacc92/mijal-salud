@@ -50,7 +50,7 @@ export const useLoginAction = routeAction$(
   })
 );
 
-export default component$((props: { hasPreseededUser?: boolean }) => {
+export default component$(() => {
   const loginAction = useLoginAction();
   const username = useSignal("");
   const password = useSignal("");

@@ -140,10 +140,21 @@ export const useHomeLoader = routeLoader$(async () => {
         .orderBy(asc(schema.verticalVideos.displayOrder));
     }
 
-    return { images, videos };
+    // 3. Cargar partners
+    let dbPartners: any[] = [];
+    try {
+      dbPartners = await db
+        .select()
+        .from(schema.partners)
+        .orderBy(asc(schema.partners.displayOrder));
+    } catch (e) {
+      console.warn("Skipping partners query:", e);
+    }
+
+    return { images, videos, partners: dbPartners };
   } catch (error) {
     console.error("Error loading home data:", error);
-    return { images: [], videos: [] };
+    return { images: [], videos: [], partners: [] };
   }
 });
 
@@ -158,7 +169,7 @@ export default component$(() => {
       <NewServices />
       <AreaProtegida />
       <Testimonials />
-      <Partners />
+      <Partners partners={homeData.value.partners} />
       <VerticalVideo videos={homeData.value.videos} />
       <Gallery images={homeData.value.images} />
       <StaffCTA />

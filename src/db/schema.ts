@@ -198,3 +198,17 @@ export type VerticalVideo = typeof verticalVideos.$inferSelect;
 export type NewVerticalVideo = typeof verticalVideos.$inferInsert;
 export type GalleryImage = typeof galeria.$inferSelect;
 export type NewGalleryImage = typeof galeria.$inferInsert;
+
+// ─── PARTNERS (Marcas asociadas en la Home) ──────────────────────────────────
+export const partners = sqliteTable("partners", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  imageUrl: text("image_url").notNull(),
+  name: text("name").notNull(),
+  displayOrder: integer("display_order").default(0).notNull(),
+  createdAt: text("created_at")
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .notNull(),
+});
+
+export type Partner = typeof partners.$inferSelect;
+export type NewPartner = typeof partners.$inferInsert;
