@@ -16,19 +16,23 @@ jobs:
       - name: Checkout del código
         uses: actions/checkout@v4
 
+      # Usamos la acción oficial de pnpm (más rápido y limpio)
+      - name: Instalar pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10 # O la versión específica que uses en local
+
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-
-      - name: Instalar pnpm
-        run: npm install -g pnpm
+          node-version: 20.x # Forzamos a que use la última revisión de Node 20
+          cache: 'pnpm'
 
       - name: Instalar dependencias del proyecto
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Instalar Vercel CLI
-        run: npm install --global vercel@latest
+        run: pnpm add -g vercel@latest
 
       - name: Descargar información del entorno de Vercel
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
