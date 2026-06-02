@@ -92,11 +92,6 @@ export default component$(() => {
     }
   });
 
-  const handleThumbnailUrlInput$ = $((e: Event) => {
-    const input = e.target as HTMLInputElement;
-    thumbnailPreview.value = input.value;
-  });
-
   const handleSubmit = $(async (event: Event, element: HTMLFormElement) => {
     isUploading.value = true;
     uploadError.value = null;
@@ -269,22 +264,12 @@ export default component$(() => {
                 class="w-full border border-slate-250 bg-white rounded-xl px-4 py-2.5 text-sm outline-none font-body file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-navy-900 file:text-white file:cursor-pointer hover:file:bg-navy-800"
               />
             </div>
-            <div class="relative flex py-2 items-center">
-              <div class="flex-grow border-t border-slate-250"></div>
-              <span class="flex-shrink mx-4 text-slate-400 text-xs font-bold uppercase tracking-wider font-body">URL de Portada</span>
-              <div class="flex-grow border-t border-slate-250"></div>
-            </div>
-            <div>
-              <label for="thumbnailUrl" class="block text-xs font-body font-semibold text-slate-600 mb-2">URL de Portada (Actual)</label>
-              <input
-                type="text"
-                id="thumbnailUrl"
-                name="thumbnailUrl"
-                value={video.thumbnailUrl || ''}
-                onInput$={handleThumbnailUrlInput$}
-                class="w-full bg-white border border-slate-200 focus:border-verde-500 rounded-xl px-4 py-2.5 text-sm outline-none transition-colors font-body"
-              />
-            </div>
+            <input
+              type="hidden"
+              id="thumbnailUrl"
+              name="thumbnailUrl"
+              value={video.thumbnailUrl || ''}
+            />
 
             {/* Thumbnail Preview */}
             {thumbnailPreview.value && (
