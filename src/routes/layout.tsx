@@ -4,6 +4,7 @@ import { Header } from "~/components/layout/Header";
 import { Footer } from "~/components/layout/Footer";
 import { WhatsAppFloat } from "~/components/layout/WhatsAppFloat";
 import { Chatbot } from "~/components/chatbot/Chatbot";
+import { ScrollToTop } from "~/components/layout/ScrollToTop";
 import { getDb } from "~/db";
 import { chatbotSettings } from "~/db/schema";
 import { eq } from "drizzle-orm";
@@ -53,6 +54,7 @@ export default component$(() => {
           initialGreeting={s.saludo || undefined}
         />
       )}
+      <ScrollToTop />
     </>
   );
 });

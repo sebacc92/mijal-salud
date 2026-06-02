@@ -100,7 +100,7 @@ export const Chatbot = component$((props: { avatarUrl?: string, initialGreeting?
       {!state.isOpen && (
         <span
           class={[
-            "fixed z-40 w-16 h-16 rounded-full bg-verde-500 animate-ping opacity-30 pointer-events-none transition-all duration-300 right-6",
+            "fixed z-40 w-16 h-16 rounded-full bg-indigo-500 animate-ping opacity-25 pointer-events-none transition-all duration-300 right-6",
             bottomPos
           ]}
         ></span>
@@ -108,11 +108,11 @@ export const Chatbot = component$((props: { avatarUrl?: string, initialGreeting?
       <button
         onClick$={() => (state.isOpen = !state.isOpen)}
         class={[
-          "fixed z-50 rounded-full shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center border-2 cursor-pointer right-6 overflow-hidden",
+          "fixed z-50 rounded-full shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center border cursor-pointer right-6 overflow-hidden hover:shadow-[0_0_20px_rgba(79,70,229,0.4)]",
           bottomPos,
           state.isOpen
             ? "bg-navy-900 text-white w-14 h-14 border-navy-800 p-3"
-            : "bg-verde-500 text-white w-16 h-16 border-verde-400 " + (props.avatarUrl ? "p-0 border-0" : "p-3")
+            : "bg-gradient-to-tr from-navy-950 via-navy-900 to-indigo-600 border-white/10 text-white w-16 h-16 " + (props.avatarUrl ? "p-0 border-0" : "p-3")
         ]}
         aria-label="Abrir asistente virtual"
       >
@@ -123,7 +123,7 @@ export const Chatbot = component$((props: { avatarUrl?: string, initialGreeting?
         ) : props.avatarUrl ? (
           <img src={props.avatarUrl} alt="Chatbot" class="w-full h-full object-cover" />
         ) : (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-10 h-10">
             <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.76c0-4.43 3.65-8.08 8.08-8.08h3.33c4.43 0 8.08 3.65 8.08 8.08s-3.65 8.08-8.08 8.08H7.5A5.25 5.25 0 012.25 15.6zm10.74-2.5h.01M9.75 10.25h.01M14.25 10.25h.01" />
           </svg>
         )}
