@@ -82,11 +82,6 @@ export default component$(() => {
     }
   });
 
-  const handleVideoUrlInput$ = $((e: Event) => {
-    const input = e.target as HTMLInputElement;
-    videoPreview.value = input.value;
-  });
-
   const handleThumbnailFileChange$ = $((e: Event) => {
     const input = e.target as HTMLInputElement;
     if (input.files && input.files[0]) {
@@ -235,25 +230,14 @@ export default component$(() => {
                 onChange$={handleVideoFileChange$}
                 class="w-full border border-slate-250 bg-white rounded-xl px-4 py-2.5 text-sm outline-none font-body file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-navy-900 file:text-white file:cursor-pointer hover:file:bg-navy-800"
               />
-              <p class="text-[10px] text-slate-400 mt-1 font-body">Si subís un archivo, reemplazará al archivo o URL actual.</p>
+              <p class="text-[10px] text-slate-400 mt-1 font-body">Subí un archivo de video para reemplazar el actual.</p>
             </div>
-            <div class="relative flex py-2 items-center">
-              <div class="flex-grow border-t border-slate-250"></div>
-              <span class="flex-shrink mx-4 text-slate-400 text-xs font-bold uppercase tracking-wider font-body">URL de Video</span>
-              <div class="flex-grow border-t border-slate-250"></div>
-            </div>
-            <div>
-              <label for="videoUrl" class="block text-xs font-body font-semibold text-slate-600 mb-2">URL del Video (Actual)</label>
-              <input
-                type="text"
-                id="videoUrl"
-                name="videoUrl"
-                value={video.videoUrl}
-                onInput$={handleVideoUrlInput$}
-                class="w-full bg-white border border-slate-200 focus:border-verde-500 rounded-xl px-4 py-2.5 text-sm outline-none transition-colors font-body"
-                required
-              />
-            </div>
+            <input
+              type="hidden"
+              id="videoUrl"
+              name="videoUrl"
+              value={video.videoUrl}
+            />
 
             {/* Video Preview */}
             {videoPreview.value && (
