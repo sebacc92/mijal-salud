@@ -221,7 +221,7 @@ export const NewServices = component$<NewServicesProps>(({ settings }) => {
             Nuevas soluciones 2026
           </div>
           <h2 class="font-display text-h2 text-navy-900 mb-4 tracking-tight">
-            La salud domiciliaria{" "}
+            La salud domiciliariaa{" "}
             <span class="text-verde-600 relative inline-block">
               del futuro,
               <span class="absolute bottom-1 left-0 w-full h-1.5 bg-verde-100/60 -z-10 rounded-full" />
