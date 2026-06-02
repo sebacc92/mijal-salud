@@ -1,9 +1,9 @@
-import { component$ } from "@builder.io/qwik";
-import { routeLoader$ } from "@builder.io/qwik-city";
+import { component$, useStore } from "@builder.io/qwik";
+import { routeLoader$, routeAction$, Form } from "@builder.io/qwik-city";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { getDb } from "~/db";
-import { leads, contactos, postulantes, newsletter, chatSessions } from "~/db/schema";
-import { count, desc } from "drizzle-orm";
+import { leads, contactos, postulantes, newsletter, chatSessions, newServicesSettings } from "~/db/schema";
+import { count, desc, eq } from "drizzle-orm";
 
 export const useDashboardLoader = routeLoader$(async () => {
   try {
@@ -29,6 +29,27 @@ export const useDashboardLoader = routeLoader$(async () => {
       .orderBy(desc(contactos.createdAt))
       .limit(5);
 
+    // Obtener la configuración de nuevos servicios (y sembrar si está vacío)
+    let serviceSettings = await db
+      .select()
+      .from(newServicesSettings);
+
+    if (serviceSettings.length === 0) {
+      const defaultServices = [
+        { id: "salud-directa", nombre: "Mijal Salud Directa", activo: true },
+        { id: "care-ia", nombre: "Mijal Care IA", activo: true },
+        { id: "prevencion-activa", nombre: "Mijal Prevención Activa", activo: true },
+        { id: "salud-360", nombre: "Mijal Salud 360", activo: true },
+        { id: "conecta-salud", nombre: "Mijal Conecta Salud", activo: true },
+      ];
+      for (const service of defaultServices) {
+        await db.insert(newServicesSettings).values(service);
+      }
+      serviceSettings = await db
+        .select()
+        .from(newServicesSettings);
+    }
+
     return {
       stats: {
         leads: leadsCountObj?.val || 0,
@@ -39,6 +60,7 @@ export const useDashboardLoader = routeLoader$(async () => {
       },
       recentLeads: recentLeadsList,
       recentContacts: recentContactsList,
+      serviceSettings,
     };
   } catch (error) {
     console.error("Error loading dashboard data:", error);
@@ -46,12 +68,49 @@ export const useDashboardLoader = routeLoader$(async () => {
       stats: { leads: 0, contactos: 0, postulantes: 0, newsletter: 0, chats: 0 },
       recentLeads: [],
       recentContacts: [],
+      serviceSettings: [],
     };
+  }
+});
+
+export const useUpdateServicesAction = routeAction$(async (data) => {
+  try {
+    const db = getDb();
+    const services = ["salud-directa", "care-ia", "prevencion-activa", "salud-360", "conecta-salud"];
+    
+    for (const serviceId of services) {
+      const active = data[serviceId] === "true" || data[serviceId] === true || data[serviceId] === "on";
+      await db
+        .update(newServicesSettings)
+        .set({ activo: active })
+        .where(eq(newServicesSettings.id, serviceId));
+    }
+    
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating services settings:", error);
+    return { success: false, error: "No se pudieron guardar los cambios de visibilidad." };
   }
 });
 
 export default component$(() => {
   const data = useDashboardLoader();
+  const updateServicesAction = useUpdateServicesAction();
+
+  const servicesState = useStore(
+    () => data.value.serviceSettings.reduce((acc, curr) => {
+      acc[curr.id] = curr.activo;
+      return acc;
+    }, {} as Record<string, boolean>)
+  );
+
+  const serviceDetails = [
+    { id: "salud-directa", emoji: "📲", tagline: "Tu médico, a un click de distancia" },
+    { id: "care-ia", emoji: "🤖", tagline: "Salud predictiva con inteligencia artificial" },
+    { id: "prevencion-activa", emoji: "🛡️", tagline: "No esperes la emergencia, prevenila" },
+    { id: "salud-360", emoji: "♾️", tagline: "Acompañamiento integral, no solo emergencias" },
+    { id: "conecta-salud", emoji: "🌐", tagline: "La plataforma que unifica todo el ecosistema" },
+  ];
 
   const cards = [
     {
@@ -210,6 +269,86 @@ export default component$(() => {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Configuración de Servicios en la Home */}
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden p-6 md:p-8 space-y-6">
+        <div>
+          <h3 class="font-bold text-lg text-navy-900 font-display">Ajustes de Visibilidad de Servicios (Home)</h3>
+          <p class="text-slate-500 font-body text-sm mt-1">
+            Activá o desactivá las cajitas de soluciones médicas domiciliarias que se muestran en la sección principal de la Home ("La salud domiciliaria del futuro, hoy").
+          </p>
+        </div>
+
+        {updateServicesAction.value?.success && (
+          <div class="bg-verde-50 border border-verde-200 text-verde-800 px-4 py-3 rounded-xl text-xs font-semibold font-body">
+            ✅ ¡Visibilidad de servicios actualizada con éxito!
+          </div>
+        )}
+        {updateServicesAction.value?.error && (
+          <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-xs font-semibold font-body">
+            ⚠️ {updateServicesAction.value.error}
+          </div>
+        )}
+
+        <Form action={updateServicesAction} class="space-y-6">
+          <div class="divide-y divide-slate-100">
+            {data.value.serviceSettings.map((service) => {
+              const details = serviceDetails.find((d) => d.id === service.id);
+              const isActive = servicesState[service.id];
+              return (
+                <div key={service.id} class="flex items-center justify-between py-4 first:pt-0 last:pb-0 font-body">
+                  <div class="flex items-center gap-4">
+                    <span class="text-2xl w-10 h-10 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center">
+                      {details?.emoji || "📦"}
+                    </span>
+                    <div>
+                      <h4 class="font-semibold text-sm text-slate-800 leading-tight">{service.nombre}</h4>
+                      <p class="text-xs text-slate-450 mt-0.5 italic">{details?.tagline || ""}</p>
+                    </div>
+                  </div>
+
+                  {/* Switch Toggle */}
+                  <div class="flex items-center gap-3">
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-widest hidden sm:inline">
+                      {isActive ? "Visible" : "Oculto"}
+                    </span>
+                    <button
+                      type="button"
+                      onClick$={() => (servicesState[service.id] = !servicesState[service.id])}
+                      class={[
+                        "w-11 h-6 rounded-full p-0.5 transition-colors duration-200 outline-none shrink-0 cursor-pointer",
+                        isActive ? "bg-verde-500" : "bg-slate-300",
+                      ].join(" ")}
+                    >
+                      <div
+                        class={[
+                          "w-5 h-5 bg-white rounded-full shadow-sm transform duration-200",
+                          isActive ? "translate-x-5" : "translate-x-0",
+                        ].join(" ")}
+                      />
+                    </button>
+                    <input
+                      type="hidden"
+                      name={service.id}
+                      value={isActive ? "true" : "false"}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div class="flex justify-end pt-4 border-t border-slate-100">
+            <button
+              type="submit"
+              disabled={updateServicesAction.isRunning}
+              class="bg-navy-900 hover:bg-navy-950 text-white font-display font-semibold text-xs px-5 py-3 rounded-xl shadow-cta transition-colors disabled:opacity-50 inline-flex items-center gap-2 cursor-pointer"
+            >
+              {updateServicesAction.isRunning ? "Guardando..." : "Guardar Visibilidad"}
+            </button>
+          </div>
+        </Form>
       </div>
     </div>
   );

@@ -212,3 +212,13 @@ export const instagramPosts = sqliteTable('instagram_posts', {
   caption: text('caption'),
   timestamp: text('timestamp'),
 });
+
+// ─── CONFIGURACION DE NUEVOS SERVICIOS (HOME CARDS) ───────────────────────────
+export const newServicesSettings = sqliteTable("new_services_settings", {
+  id: text("id").primaryKey(), // 'salud-directa' | 'care-ia' | 'prevencion-activa' | 'salud-360' | 'conecta-salud'
+  nombre: text("nombre").notNull(),
+  activo: integer("activo", { mode: "boolean" }).default(true).notNull(),
+});
+
+export type NewServicesSettings = typeof newServicesSettings.$inferSelect;
+export type NewNewServicesSettings = typeof newServicesSettings.$inferInsert;

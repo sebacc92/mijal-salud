@@ -161,7 +161,11 @@ const delays = [
   "delay-[250ms]",
 ];
 
-export const NewServices = component$(() => {
+export interface NewServicesProps {
+  settings?: { id: string; activo: boolean }[];
+}
+
+export const NewServices = component$<NewServicesProps>(({ settings }) => {
   const isVisible = useSignal(false);
   const containerRef = useSignal<Element>();
 
@@ -181,6 +185,14 @@ export const NewServices = component$(() => {
     observer.observe(containerRef.value);
     cleanup(() => observer.disconnect());
   });
+
+  const activeServicios = servicios.filter(
+    (s) => !settings || settings.find((set) => set.id === s.id)?.activo !== false
+  );
+
+  if (activeServicios.length === 0) {
+    return null;
+  }
 
   return (
     <section ref={containerRef} class="py-section bg-gradient-section overflow-hidden">
@@ -224,9 +236,9 @@ export const NewServices = component$(() => {
 
         {/* Grid de cards */}
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {servicios.map((servicio, index) => {
+          {activeServicios.map((servicio, index) => {
             const c = servicio.colorScheme;
-            const delayClass = delays[index];
+            const delayClass = delays[index] || "delay-[0ms]";
             return (
               <Link
                 key={servicio.id}

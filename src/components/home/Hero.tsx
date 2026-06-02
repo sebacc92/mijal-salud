@@ -26,9 +26,9 @@ export const Hero = component$(() => {
 
   return (
     <section class="relative min-h-screen flex items-center overflow-hidden bg-navy-900">
-      {/* Imagen de fondo sutil (30% de opacidad) */}
+      {/* Imagen de fondo sutil (70% de opacidad) */}
       <div
-        class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-30 pointer-events-none"
+        class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-70 pointer-events-none"
         style={{
           backgroundImage: `url(${coverImg})`,
         }}

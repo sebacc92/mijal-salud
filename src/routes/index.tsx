@@ -233,10 +233,38 @@ export const useHomeLoader = routeLoader$(async () => {
       console.warn("Skipping instagram query:", e);
     }
 
-    return { images, videos, partners: dbPartners, testimonios: dbTestimonios, instagramPosts: dbInstagramPosts };
+    // 6. Cargar configuraciones de nuevos servicios (y sembrar si está vacío)
+    let serviceSettings = await db
+      .select()
+      .from(schema.newServicesSettings);
+
+    if (serviceSettings.length === 0) {
+      const defaultServices = [
+        { id: "salud-directa", nombre: "Mijal Salud Directa", activo: true },
+        { id: "care-ia", nombre: "Mijal Care IA", activo: true },
+        { id: "prevencion-activa", nombre: "Mijal Prevención Activa", activo: true },
+        { id: "salud-360", nombre: "Mijal Salud 360", activo: true },
+        { id: "conecta-salud", nombre: "Mijal Conecta Salud", activo: true },
+      ];
+      for (const service of defaultServices) {
+        await db.insert(schema.newServicesSettings).values(service);
+      }
+      serviceSettings = await db
+        .select()
+        .from(schema.newServicesSettings);
+    }
+
+    return { 
+      images, 
+      videos, 
+      partners: dbPartners, 
+      testimonios: dbTestimonios, 
+      instagramPosts: dbInstagramPosts,
+      newServicesSettings: serviceSettings 
+    };
   } catch (error) {
     console.error("Error loading home data:", error);
-    return { images: [], videos: [], partners: [], testimonios: [], instagramPosts: [] };
+    return { images: [], videos: [], partners: [], testimonios: [], instagramPosts: [], newServicesSettings: [] };
   }
 });
 
@@ -248,7 +276,7 @@ export default component$(() => {
       <Hero />
       <ServicesGrid />
       <Stats />
-      <NewServices />
+      <NewServices settings={homeData.value.newServicesSettings} />
       <AreaProtegida />
       <Testimonials list={homeData.value.testimonios} />
       <Partners partners={homeData.value.partners} />
