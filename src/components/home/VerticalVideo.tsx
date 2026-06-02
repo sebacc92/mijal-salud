@@ -42,8 +42,8 @@ export const VerticalVideo = component$<VerticalVideoProps>(({ videos }) => {
           </p>
         </div>
 
-        {/* Grid layout */}
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 lg:gap-12 justify-center justify-items-center items-center w-full">
+        {/* Flex layout for centering */}
+        <div class="flex flex-wrap justify-center items-center gap-10 lg:gap-12 w-full">
           {videos.map((video) => (
             <VerticalVideoCard key={video.id} video={video} />
           ))}
