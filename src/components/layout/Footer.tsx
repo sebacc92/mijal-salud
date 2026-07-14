@@ -17,7 +17,7 @@ const serviciosLinks = [
 ];
 
 const empresaLinks = [
-  { label: "Soluciones para Empresas", href: "/empresas" },
+  { label: "Cobertura para Eventos", href: "/eventos" },
   { label: "Sumate al Equipo", href: "/sumate" },
   { label: "Contacto", href: "/contacto" },
 ];

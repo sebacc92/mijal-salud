@@ -66,7 +66,7 @@ function getBotResponseFallback(userMessage: string): string {
     text.includes("area protegida") ||
     text.includes("empleado")
   ) {
-    return "🏢 Ofrecemos cobertura de Área Protegida para oficinas y comercios, cobertura médica para eventos corporativos y deportivos, telemedicina corporativa y medicina laboral. Consultá nuestra sección exclusiva para Empresas (/empresas) o completá el formulario para que un especialista corporativo te contacte.";
+    return "🏢 Ofrecemos cobertura médica para eventos (congresos, festivales, obras y estadios) y Área Protegida para espacios de trabajo. Consultá nuestra sección de Eventos (/eventos) o completá el formulario para que un especialista te contacte.";
   }
 
   // 6. Telemedicina

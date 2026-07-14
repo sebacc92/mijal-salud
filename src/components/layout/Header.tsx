@@ -19,7 +19,7 @@ const navLinks = [
   { label: "Inicio", href: "/" },
   { label: "Nosotros", href: "/nosotros" },
   { label: "Servicios", href: "/servicios" },
-  { label: "Empresas", href: "/empresas" },
+  { label: "Eventos", href: "/eventos" },
   { label: "Sumate", href: "/sumate" },
   { label: "Contacto", href: "/contacto" },
 ];

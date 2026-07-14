@@ -5,7 +5,6 @@ import { Hero } from "~/components/home/Hero";
 import { ServicesGrid } from "~/components/home/ServicesGrid";
 import { Stats } from "~/components/home/Stats";
 import { NewServices } from "~/components/home/NewServices";
-import { AreaProtegida } from "~/components/home/AreaProtegida";
 import { Testimonials } from "~/components/home/Testimonials";
 import { Partners } from "~/components/home/Partners";
 import { StaffCTA } from "~/components/home/StaffCTA";
@@ -277,7 +276,6 @@ export default component$(() => {
       <ServicesGrid />
       <Stats />
       <NewServices settings={homeData.value.newServicesSettings} />
-      <AreaProtegida />
       <Testimonials list={homeData.value.testimonios} />
       <Partners partners={homeData.value.partners} />
       <VerticalVideo videos={homeData.value.videos} />

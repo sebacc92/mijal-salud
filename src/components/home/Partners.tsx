@@ -239,7 +239,7 @@ export const Partners = component$<PartnersProps>(({ partners }) => {
         {/* CTA a empresas */}
         <div class="text-center mt-14">
           <Link
-            href="/empresas"
+            href="/eventos"
             class="inline-flex items-center gap-1.5 font-display font-bold text-navy-600 hover:text-verde-600 transition-colors text-base"
           >
             + Empresas que confían en MIJAL SALUD

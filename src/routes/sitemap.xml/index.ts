@@ -17,7 +17,7 @@ const routes = [
   { path: "/soluciones/prevencion-activa", priority: "0.8", changefreq: "monthly" },
   { path: "/soluciones/salud-360", priority: "0.8", changefreq: "monthly" },
   { path: "/soluciones/conecta-salud", priority: "0.7", changefreq: "monthly" },
-  { path: "/empresas", priority: "0.9", changefreq: "monthly" },
+  { path: "/eventos", priority: "0.9", changefreq: "monthly" },
   { path: "/nosotros", priority: "0.7", changefreq: "yearly" },
   { path: "/contacto", priority: "0.8", changefreq: "yearly" },
   { path: "/sumate", priority: "0.6", changefreq: "monthly" },
