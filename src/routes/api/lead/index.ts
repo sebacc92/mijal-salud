@@ -2,6 +2,7 @@ import type { RequestHandler } from "@builder.io/qwik-city";
 import { getDb, schema } from "~/db";
 import { nanoid } from "nanoid";
 import { SERVICIOS_VALIDOS } from "~/lib/constants";
+import { notifyNewLead } from "~/lib/notify";
 
 const segmentosValidos = ["particular", "empresa", "obra-social"];
 
@@ -32,7 +33,7 @@ function recordHit(ip: string): void {
   ipHits.set(ip, hits);
 }
 
-export const onPost: RequestHandler = async ({ request, json, clientConn }) => {
+export const onPost: RequestHandler = async ({ request, json, clientConn, env }) => {
   try {
     const body = await request.json();
     const {
@@ -93,7 +94,7 @@ export const onPost: RequestHandler = async ({ request, json, clientConn }) => {
     const db = getDb();
     const id = nanoid();
 
-    await db.insert(schema.leads).values({
+    const leadData = {
       id,
       nombre: String(nombre).trim(),
       email: String(email).toLowerCase().trim(),
@@ -104,10 +105,19 @@ export const onPost: RequestHandler = async ({ request, json, clientConn }) => {
       mensaje: mensaje ? String(mensaje).trim() : null,
       origen: "web",
       estado: "nuevo",
-    });
+    };
+
+    await db.insert(schema.leads).values(leadData);
 
     // Registrar el envío aceptado para el rate limiting.
     recordHit(ip);
+
+    // Notificación por email (Resend). No bloquea ni rompe si falla.
+    await notifyNewLead(leadData, {
+      apiKey: env.get("RESEND_API_KEY"),
+      to: env.get("LEADS_NOTIFY_EMAIL"),
+      from: env.get("LEADS_NOTIFY_FROM"),
+    });
 
     json(200, {
       success: true,
