@@ -8,7 +8,7 @@ const valores = [
   { emoji: "❤️", titulo: "Humanidad", desc: "Cada paciente es una persona, no un número. El trato humano es nuestra prioridad absoluta." },
   { emoji: "⚡", titulo: "Urgencia", desc: "Entendemos que en salud el tiempo es crítico. Actuamos con rapidez y precisión." },
   { emoji: "🏆", titulo: "Excelencia", desc: "Protocolos de nivel internacional, capacitación continua y mejora permanente." },
-  { emoji: "🤝", titulo: "Confianza", desc: `Más de ${new Date().getFullYear() - 2001} años construyendo una relación de confianza con pacientes y familias.` },
+  { emoji: "🤝", titulo: "Confianza", desc: `Más de ${new Date().getFullYear() - 2005} años construyendo una relación de confianza con pacientes y familias.` },
 ];
 
 export default component$(() => {
@@ -20,10 +20,10 @@ export default component$(() => {
         <div class="absolute top-0 right-0 w-96 h-96 bg-verde-500 rounded-full opacity-10 blur-3xl" />
         <div class="relative container mx-auto px-6 lg:px-12 text-center max-w-3xl mx-auto">
           <h1 class="font-display text-h1 text-white mb-5">
-            Más de {new Date().getFullYear() - 2001} años cuidando <span class="text-verde-400">vidas</span>
+            Más de {new Date().getFullYear() - 2005} años cuidando <span class="text-verde-400">vidas</span>
           </h1>
           <p class="text-white/70 font-body text-body-lg">
-            Somos Mijal Salud S.A., una empresa argentina fundada en 2001 con la misión de 
+            Somos Mijal Salud S.A., una empresa argentina fundada en 2005 con la misión de
             llevar atención médica de excelencia a cada hogar del AMBA.
           </p>
         </div>
@@ -86,6 +86,6 @@ export default component$(() => {
 });
 
 export const head: DocumentHead = {
-  title: `Nosotros — Mijal Salud | Más de ${new Date().getFullYear() - 2001} años cuidando vidas`,
-  meta: [{ name: "description", content: "Conocé la historia, misión y equipo de Mijal Salud. Fundada en 2001, somos líderes en atención médica domiciliaria en Buenos Aires y AMBA." }],
+  title: `Nosotros — Mijal Salud | Más de ${new Date().getFullYear() - 2005} años cuidando vidas`,
+  meta: [{ name: "description", content: "Conocé la historia, misión y equipo de Mijal Salud. Fundada en 2005, somos líderes en atención médica domiciliaria en Buenos Aires y AMBA." }],
 };

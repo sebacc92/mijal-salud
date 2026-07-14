@@ -70,11 +70,11 @@ export default component$(() => {
               <h2 class="font-display text-h2 text-navy-900 mb-6">Qué traemos a tu domicilio</h2>
               <ul class="space-y-4">
                 {[
-                  "Médico clínico o especialista y enfermero calificado",
-                  "Desfibrilador semiautomático (DEA)",
+                  "Médico especializado y enfermero calificado",
                   "Medicación de emergencias completa",
                   "Oxígeno, cánulas y equipos de vía aérea avanzada",
                   "Electrocardiograma portátil",
+                  "Equipamiento de última tecnología",
                   "Coordinación con guardias hospitalarias",
                   "Traslado en ambulancia incluido si es necesario",
                 ].map((item) => (

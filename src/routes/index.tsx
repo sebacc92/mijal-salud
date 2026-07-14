@@ -295,7 +295,7 @@ export const head: DocumentHead = {
     {
       name: "description",
       content:
-        `Más de ${new Date().getFullYear() - 2001} años brindando atención médica de excelencia: emergencias, urgencias, traslados, internación domiciliaria y nuevos servicios digitales de salud en Buenos Aires.`,
+        `Más de ${new Date().getFullYear() - 2005} años brindando atención médica de excelencia: emergencias, urgencias, traslados, internación domiciliaria y nuevos servicios digitales de salud en Buenos Aires.`,
     },
     {
       name: "keywords",

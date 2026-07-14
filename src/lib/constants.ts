@@ -1,11 +1,16 @@
 // ─── Datos de contacto ────────────────────────────────────────────────────
-export const TELEFONO_EMERGENCIAS = "011 4788-6953";
+export const TELEFONO_EMERGENCIAS = "+54 11 4788-6953/6954";
+export const TELEFONO_NOTA = "Líneas rotativas";
 export const TELEFONO_HREF = "tel:+5491132613981";
 export const WHATSAPP_NUMERO = "5491132613981";
 export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMERO}`;
 export const WHATSAPP_ATENCION = `${WHATSAPP_URL}?text=Hola!%20Necesito%20atenci%C3%B3n%20m%C3%A9dica`;
 export const WHATSAPP_EMPRESAS = `${WHATSAPP_URL}?text=Hola!%20Me%20interesa%20conocer%20las%20soluciones%20para%20empresas`;
+// WhatsApp de Atención 24/7 a Clientes (central de emergencias / convenios activos)
+export const WHATSAPP_CLIENTES_NUMERO = "541135395037";
+export const WHATSAPP_CLIENTES = `https://wa.me/${WHATSAPP_CLIENTES_NUMERO}`;
 export const EMAIL_CONTACTO = "info@mijalsalud.com.ar";
+export const EMAIL_HREF = `mailto:${EMAIL_CONTACTO}`;
 export const DIRECCION = "Buenos Aires, AMBA, Argentina";
 
 // ─── Redes sociales ───────────────────────────────────────────────────────
@@ -15,7 +20,7 @@ export const FACEBOOK_URL = "https://www.facebook.com/mijalsalud/";
 
 // ─── Estadísticas ─────────────────────────────────────────────────────────
 export const STATS = {
-  anos: new Date().getFullYear() - 2001,
+  anos: new Date().getFullYear() - 2005,
   atenciones: 28957,
   partners: 36,
   horasStr: "24/7",
@@ -120,4 +125,4 @@ export const NUEVOS_SERVICIOS = [
 export const SITE_NAME = "Mijal Salud";
 export const SITE_URL = "https://mijalsalud.com.ar";
 export const SITE_DESCRIPTION =
-  `Más de ${new Date().getFullYear() - 2001} años brindando atención médica domiciliaria de excelencia: emergencias, urgencias, traslados e internación en Buenos Aires y AMBA.`;
+  `Más de ${new Date().getFullYear() - 2005} años brindando atención médica domiciliaria de excelencia: emergencias, urgencias, traslados e internación en Buenos Aires y AMBA.`;

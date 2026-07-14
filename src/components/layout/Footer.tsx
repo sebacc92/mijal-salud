@@ -16,14 +16,6 @@ const serviciosLinks = [
   { label: "Área Protegida", href: "/servicios/area-protegida" },
 ];
 
-const solucionesLinks = [
-  { label: "Mijal Salud Directa", href: "/soluciones/salud-directa" },
-  { label: "Mijal Care IA", href: "/soluciones/care-ia" },
-  { label: "Prevención Activa", href: "/soluciones/prevencion-activa" },
-  { label: "Salud 360", href: "/soluciones/salud-360" },
-  { label: "Conecta Salud", href: "/soluciones/conecta-salud" },
-];
-
 const empresaLinks = [
   { label: "Soluciones para Empresas", href: "/empresas" },
   { label: "Sumate al Equipo", href: "/sumate" },
@@ -38,7 +30,7 @@ export const Footer = component$(() => {
 
       {/* Cuerpo del footer */}
       <div class="container mx-auto px-6 lg:px-12 py-16">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
           {/* Columna 1: Marca */}
           <div class="sm:col-span-2 lg:col-span-1">
             <div class="flex items-center gap-3 mb-4">
@@ -51,7 +43,7 @@ export const Footer = component$(() => {
               />
             </div>
             <p class="text-white/60 font-body text-sm leading-relaxed mb-6">
-              Más de {new Date().getFullYear() - 2001} años brindando atención médica domiciliaria de
+              Más de {new Date().getFullYear() - 2005} años brindando atención médica domiciliaria de
               excelencia en Buenos Aires y el AMBA.
             </p>
             <div class="flex items-center gap-3">
@@ -110,26 +102,7 @@ export const Footer = component$(() => {
             </ul>
           </div>
 
-          {/* Columna 3: Soluciones */}
-          <div>
-            <h3 class="font-display font-semibold text-sm uppercase tracking-widest text-white/40 mb-5">
-              Soluciones 2026
-            </h3>
-            <ul class="space-y-3">
-              {solucionesLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    class="text-white/70 hover:text-verde-400 font-body text-sm transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Columna 4: Empresa */}
+          {/* Columna 3: Empresa */}
           <div>
             <h3 class="font-display font-semibold text-sm uppercase tracking-widest text-white/40 mb-5">
               Empresa
