@@ -218,11 +218,11 @@ export default component$(() => {
                 <span class="text-verde-600 text-xs font-body font-semibold uppercase tracking-wider">Área de Acción</span>
               </div>
               <h2 class="font-display text-h2 text-navy-900 mb-6">Zona de Cobertura e Infraestructura</h2>
-              <p class="text-gris-600 font-body text-sm leading-relaxed mb-4">
-                Nuestra base operativa central y nuestra red de unidades móviles de emergencias de alta complejidad se encuentran estratégicamente ubicadas para garantizar tiempos de respuesta líderes en el mercado.
-              </p>
               <p class="text-gris-600 font-body text-sm leading-relaxed mb-6">
-                Brindamos cobertura integral de **Área Protegida** y traslados en toda la **Ciudad Autónoma de Buenos Aires (CABA)** y el **Gran Buenos Aires (GBA / AMBA)**, coordinando derivaciones de forma inmediata con los principales centros médicos de cada localidad.
+                Cubrimos Área Protegida y traslados en toda la Ciudad Autónoma de
+                Buenos Aires (CABA) y el Gran Buenos Aires (GBA / AMBA), con
+                unidades móviles distribuidas estratégicamente y derivación
+                inmediata a los principales centros médicos de cada zona.
               </p>
 
               <div class="space-y-4">

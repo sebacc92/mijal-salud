@@ -35,7 +35,7 @@ export default component$(() => {
 
             <h2 class="font-display text-2xl text-navy-900 font-bold mt-6">3. Uso de las Herramientas Digitales</h2>
             <p>
-              Usted se compromete a hacer un uso lícito y correcto de los formularios y simuladores del sitio (tales como la calculadora de ROI para empresas o formularios de postulación). Específicamente, acepta:
+              Usted se compromete a hacer un uso lícito y correcto de los formularios del sitio (tales como los formularios de contacto o de postulación). Específicamente, acepta:
             </p>
             <ul class="list-disc pl-6 space-y-2">
               <li>No ingresar datos falsos, inexactos o de terceros sin su debida autorización.</li>
