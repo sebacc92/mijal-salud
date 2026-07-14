@@ -4,19 +4,20 @@ import type { DocumentHead } from "@builder.io/qwik-city";
 import { getDb } from "~/db";
 import { users } from "~/db/schema";
 import { eq } from "drizzle-orm";
+import {
+  ensureAuthReady,
+  verifyPassword,
+  hashPassword,
+  isLegacyPassword,
+} from "~/lib/auth";
 
 export const useLoginAction = routeAction$(
-  async ({ username, password }, { cookie, redirect }) => {
+  async ({ username, password }, { cookie, redirect, env }) => {
     const db = getDb();
 
-    // Auto-seed: si no hay usuarios registrados, creamos uno por defecto
-    const existingUsers = await db.select().from(users).limit(1);
-    if (existingUsers.length === 0) {
-      await db.insert(users).values({
-        username: "admin",
-        password: "admin123", // Contraseña por defecto
-      });
-    }
+    // Deja lista la tabla de usuarios y siembra los admins iniciales
+    // definidos en SEED_ADMIN_USERS (si la variable está configurada).
+    await ensureAuthReady(db, env.get("SEED_ADMIN_USERS"));
 
     // Buscar al usuario
     const [user] = await db
@@ -25,12 +26,26 @@ export const useLoginAction = routeAction$(
       .where(eq(users.username, username.trim().toLowerCase()))
       .limit(1);
 
-    if (!user || user.password !== password) {
+    if (!user || !(await verifyPassword(password, user.password))) {
       return {
         success: false,
         error: "Usuario o contraseña incorrectos.",
       };
     }
+
+    // Si la contraseña estaba en texto plano (legacy), la migramos a hash.
+    if (isLegacyPassword(user.password)) {
+      await db
+        .update(users)
+        .set({ password: await hashPassword(password) })
+        .where(eq(users.id, user.id));
+    }
+
+    // Registrar el último acceso.
+    await db
+      .update(users)
+      .set({ lastLogin: new Date().toISOString() })
+      .where(eq(users.id, user.id));
 
     // Guardar sesión en cookie por 7 días
     const isProd = import.meta.env.PROD || process.env.NODE_ENV === "production";
@@ -112,13 +127,6 @@ export default component$(() => {
                 <p class="text-red-400 text-sm font-body">{loginAction.value.error}</p>
               </div>
             )}
-
-            {/* Ayuda de Desarrollo / Semilla */}
-            <div class="bg-verde-500/5 border border-verde-500/20 rounded-xl px-4 py-3 text-center">
-              <p class="text-[11px] text-slate-400 font-body">
-                💡 <span class="font-medium text-verde-400">Desarrollo:</span> Si es la primera vez que ingresás, usá <code class="bg-slate-900 px-1 py-0.5 rounded text-verde-300 font-semibold">admin</code> / <code class="bg-slate-900 px-1 py-0.5 rounded text-verde-300 font-semibold">admin123</code>.
-              </p>
-            </div>
 
             <button
               type="submit"

@@ -102,7 +102,9 @@ export type NewTestimonio = typeof testimonios.$inferInsert;
 export const users = sqliteTable("users", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+  password: text("password").notNull(), // hash PBKDF2 (formato "pbkdf2$..."); legacy: texto plano
+  role: text("role").notNull().default("admin"), // por ahora sólo existe el rol "admin"
+  lastLogin: text("last_login"), // ISO 8601 del último acceso; null si nunca ingresó
   createdAt: text("created_at")
     .default(sql`(CURRENT_TIMESTAMP)`)
     .notNull(),
