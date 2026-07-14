@@ -1,19 +1,9 @@
 import { component$, useSignal, $ } from "@builder.io/qwik";
 import { isValidEmail } from "~/lib/utils";
+import { LEAD_SERVICIOS } from "~/lib/constants";
 
-const serviciosB2C = [
-  { value: "salud-directa", label: "Mijal Salud Directa" },
-  { value: "care-ia", label: "Mijal Care IA" },
-  { value: "prevencion-activa", label: "Mijal Prevención Activa" },
-  { value: "salud-360", label: "Mijal Salud 360" },
-  { value: "conecta-salud", label: "Mijal Conecta Salud" },
-];
-
-const serviciosB2B = [
-  { value: "cobertura-evento", label: "Cobertura de evento" },
-  { value: "area-protegida", label: "Área protegida" },
-  { value: "proteccion-empresa", label: "Protección para tu empresa" },
-];
+const serviciosB2C = LEAD_SERVICIOS.filter((s) => s.grupo === "b2c");
+const serviciosB2B = LEAD_SERVICIOS.filter((s) => s.grupo === "b2b");
 
 const segmentos = [
   { value: "particular", label: "Particular / Familia" },

@@ -121,6 +121,23 @@ export const NUEVOS_SERVICIOS = [
   },
 ] as const;
 
+// ─── Servicios de leads ───────────────────────────────────────────────────
+// Fuente única de verdad para los servicios que se pueden elegir en el
+// formulario de lead. La usan el LeadForm, la validación de /api/lead y el
+// filtro del panel /admin/leads, para que nunca queden desalineados.
+export const LEAD_SERVICIOS = [
+  { value: "salud-directa", label: "Mijal Salud Directa", grupo: "b2c" },
+  { value: "care-ia", label: "Mijal Care IA", grupo: "b2c" },
+  { value: "prevencion-activa", label: "Mijal Prevención Activa", grupo: "b2c" },
+  { value: "salud-360", label: "Mijal Salud 360", grupo: "b2c" },
+  { value: "conecta-salud", label: "Mijal Conecta Salud", grupo: "b2c" },
+  { value: "cobertura-evento", label: "Cobertura de evento", grupo: "b2b" },
+  { value: "area-protegida", label: "Área protegida", grupo: "b2b" },
+  { value: "proteccion-empresa", label: "Protección para tu empresa", grupo: "b2b" },
+] as const;
+
+export const SERVICIOS_VALIDOS: string[] = LEAD_SERVICIOS.map((s) => s.value);
+
 // ─── SEO ──────────────────────────────────────────────────────────────────
 export const SITE_NAME = "Mijal Salud";
 export const SITE_URL = "https://mijalsalud.com.ar";

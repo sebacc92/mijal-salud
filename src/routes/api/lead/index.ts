@@ -1,17 +1,7 @@
 import type { RequestHandler } from "@builder.io/qwik-city";
 import { getDb, schema } from "~/db";
 import { nanoid } from "nanoid";
-
-const serviciosValidos = [
-  "salud-directa",
-  "care-ia",
-  "prevencion-activa",
-  "salud-360",
-  "conecta-salud",
-  "area-protegida",
-  "cobertura-evento",
-  "proteccion-empresa",
-];
+import { SERVICIOS_VALIDOS } from "~/lib/constants";
 
 const segmentosValidos = ["particular", "empresa", "obra-social"];
 
@@ -33,7 +23,7 @@ export const onPost: RequestHandler = async ({ request, json }) => {
       return;
     }
 
-    if (!serviciosValidos.includes(servicio)) {
+    if (!SERVICIOS_VALIDOS.includes(servicio)) {
       json(400, { error: "Servicio inválido" });
       return;
     }
