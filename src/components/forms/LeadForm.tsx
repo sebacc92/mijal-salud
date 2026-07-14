@@ -77,6 +77,18 @@ export const LeadForm = component$<LeadFormProps>(
       }
     });
 
+    const resetForm = $(() => {
+      nombre.value = "";
+      email.value = "";
+      telefono.value = "";
+      empresa.value = "";
+      servicio.value = servicioDefault;
+      segmento.value = "";
+      mensaje.value = "";
+      errors.value = {};
+      success.value = false;
+    });
+
     if (success.value) {
       return (
         <div class="flex flex-col items-center gap-4 py-10 text-center">
@@ -87,6 +99,13 @@ export const LeadForm = component$<LeadFormProps>(
           </div>
           <h3 class="font-display font-bold text-navy-900 text-xl">¡Gracias por tu interés!</h3>
           <p class="text-gris-600 font-body">Un asesor te contactará dentro de las próximas 24 horas hábiles.</p>
+          <button
+            type="button"
+            onClick$={resetForm}
+            class="mt-2 text-verde-600 hover:text-verde-700 font-display font-semibold text-sm underline underline-offset-4 transition-colors"
+          >
+            Enviar otra consulta
+          </button>
         </div>
       );
     }
