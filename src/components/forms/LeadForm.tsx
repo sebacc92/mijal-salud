@@ -25,6 +25,7 @@ export const LeadForm = component$<LeadFormProps>(
     const servicio = useSignal(servicioDefault);
     const segmento = useSignal("");
     const mensaje = useSignal("");
+    const website = useSignal(""); // honeypot anti-bots (debe quedar vacío)
     const loading = useSignal(false);
     const success = useSignal(false);
     const errors = useSignal<Record<string, string>>({});
@@ -52,6 +53,7 @@ export const LeadForm = component$<LeadFormProps>(
             servicio: servicio.value,
             segmento: segmento.value,
             mensaje: mensaje.value.trim() || undefined,
+            website: website.value, // honeypot
           }),
         });
         if (res.ok) {
@@ -102,6 +104,22 @@ export const LeadForm = component$<LeadFormProps>(
 
     return (
       <form preventdefault:submit onSubmit$={handleSubmit} class="space-y-4" noValidate>
+        {/* Honeypot anti-bots: oculto para usuarios, visible para bots. */}
+        <div class="absolute left-[-9999px] top-[-9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
+          <label>
+            No completar este campo
+            <input
+              type="text"
+              name="website"
+              id="lead-website"
+              tabIndex={-1}
+              autoComplete="off"
+              value={website.value}
+              onInput$={(e) => (website.value = (e.target as HTMLInputElement).value)}
+            />
+          </label>
+        </div>
+
         {/* Nombre + Email */}
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
