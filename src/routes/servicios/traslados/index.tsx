@@ -47,13 +47,13 @@ export default component$(() => {
               {
                 icon: "🚐",
                 title: "Mediana complejidad",
-                desc: "Con enfermero calificado y equipamiento básico. Para pacientes estables que requieren asistencia.",
-                incluye: ["Oxígeno y saturometría", "Enfermero capacitado", "Silla de ruedas", "Camilla articulada"],
+                desc: "Sin enfermero. Con acompañamiento médico.",
+                incluye: ["Médico acompañante", "Oxígeno y saturometría", "Silla de ruedas", "Camilla articulada"],
                 color: "border-blue-200 bg-blue-50",
               },
               {
                 icon: "🚗",
-                title: "Traslado sanitario liviano",
+                title: "Baja complejidad",
                 desc: "Para pacientes autónomos que necesitan asistencia básica durante el trayecto.",
                 incluye: ["Acompañante capacitado", "Botiquín básico", "Comunicación con central", "Cobertura de ruta"],
                 color: "border-verde-200 bg-verde-50",

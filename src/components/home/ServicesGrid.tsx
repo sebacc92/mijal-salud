@@ -4,7 +4,6 @@ import { Link } from "@builder.io/qwik-city";
 interface Service {
   id: string;
   nombre: string;
-  descripcion: string;
   href: string;
   color: string;
   iconPath: string;
@@ -14,8 +13,6 @@ const services: Service[] = [
   {
     id: "emergencias",
     nombre: "Emergencias",
-    descripcion:
-      "Respuesta inmediata ante riesgo de vida. Médico y enfermero en tu domicilio en minutos.",
     href: "/servicios/emergencias",
     color: "red",
     iconPath:
@@ -24,18 +21,22 @@ const services: Service[] = [
   {
     id: "urgencias",
     nombre: "Urgencias",
-    descripcion:
-      "Atención domiciliaria para situaciones que no pueden esperar pero no son de vida o muerte.",
     href: "/servicios/urgencias",
-    color: "orange",
+    color: "amber",
     iconPath:
       "M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z",
   },
   {
+    id: "visitas",
+    nombre: "Visitas Médicas",
+    href: "/servicios/visitas",
+    color: "verde",
+    iconPath:
+      "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z",
+  },
+  {
     id: "traslados",
     nombre: "Traslados Sanitarios",
-    descripcion:
-      "Traslados programados y de urgencia con unidades equipadas y personal médico calificado.",
     href: "/servicios/traslados",
     color: "blue",
     iconPath:
@@ -44,28 +45,14 @@ const services: Service[] = [
   {
     id: "internacion",
     nombre: "Internación Domiciliaria",
-    descripcion:
-      "Seguimiento médico y de enfermería en tu hogar. Recuperate con tu familia y en tu ambiente.",
     href: "/servicios/internacion",
     color: "navy",
     iconPath:
       "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6",
   },
   {
-    id: "visitas",
-    nombre: "Visitas Médicas",
-    descripcion:
-      "Consultas programadas a domicilio para diagnóstico, seguimiento, recetas y certificados.",
-    href: "/servicios/visitas",
-    color: "verde",
-    iconPath:
-      "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z",
-  },
-  {
     id: "area-protegida",
     nombre: "Área Protegida",
-    descripcion:
-      "Cobertura médica para eventos: congresos, fiestas, obras en construcción, estadios y más.",
     href: "/servicios/area-protegida",
     color: "violet",
     iconPath:
@@ -82,10 +69,10 @@ const colorConfig: Record<
     hover: "hover:border-red-200 hover:shadow-[0_20px_50px_rgba(239,68,68,0.08)]",
     accent: "group-hover:text-red-600",
   },
-  orange: {
-    icon: "bg-orange-50 text-orange-600 border border-orange-100/50",
-    hover: "hover:border-orange-200 hover:shadow-[0_20px_50px_rgba(249,115,22,0.08)]",
-    accent: "group-hover:text-orange-600",
+  amber: {
+    icon: "bg-amber-50 text-amber-600 border border-amber-100/50",
+    hover: "hover:border-amber-200 hover:shadow-[0_20px_50px_rgba(245,158,11,0.10)]",
+    accent: "group-hover:text-amber-600",
   },
   blue: {
     icon: "bg-blue-50 text-blue-600 border border-blue-100/50",
@@ -219,12 +206,9 @@ export const ServicesGrid = component$(() => {
                 </div>
 
                 {/* Contenido */}
-                <h3 class="font-display font-bold text-navy-900 text-lg mb-2 group-hover:text-navy-950 transition-colors">
+                <h3 class="font-display font-bold text-navy-900 text-lg mb-6 flex-grow group-hover:text-navy-950 transition-colors">
                   {service.nombre}
                 </h3>
-                <p class="text-gris-600 font-body text-[14.5px] leading-relaxed flex-grow mb-6">
-                  {service.descripcion}
-                </p>
 
                 {/* CTA */}
                 <div
@@ -233,7 +217,7 @@ export const ServicesGrid = component$(() => {
                     colors.accent,
                   ]}
                 >
-                  Conocer más
+                  Más información
                   <svg
                     class="w-4 h-4 transform group-hover:translate-x-1.5 transition-transform duration-300"
                     fill="none"

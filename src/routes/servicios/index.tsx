@@ -12,9 +12,9 @@ const servicios = [
       "Ante una emergencia médica, el tiempo es crítico. Nuestra central operativa despacha una unidad médica equipada con médico y enfermero en minutos. Cubrimos paro cardiorrespiratorio, accidentes cerebrovasculares, politraumatismos, dificultad respiratoria grave y toda situación de riesgo de vida.",
     incluye: [
       "Médico y enfermero en el lugar",
-      "Desfibrilador, oxígeno y medicación de emergencia",
+      "Oxígeno y medicación de emergencia",
       "Coordinación con hospitales y guardias",
-      "Traslado incluido si es necesario",
+      "Equipamiento de última tecnología",
     ],
     href: "/servicios/emergencias",
     color: { bg: "bg-red-50", border: "border-red-100", icon: "text-red-600", badge: "bg-red-100 text-red-700" },
@@ -33,7 +33,23 @@ const servicios = [
       "Derivación y coordinación si es necesario",
     ],
     href: "/servicios/urgencias",
-    color: { bg: "bg-orange-50", border: "border-orange-100", icon: "text-orange-600", badge: "bg-orange-100 text-orange-700" },
+    color: { bg: "bg-amber-50", border: "border-amber-100", icon: "text-amber-600", badge: "bg-amber-100 text-amber-700" },
+  },
+  {
+    id: "visitas",
+    emoji: "👨‍⚕️",
+    nombre: "Visitas Médicas",
+    tagline: "Tu médico en casa, orientado a Código Verde",
+    descripcion:
+      "Atención médica a domicilio sin turno previo, derivada desde la Central de Operaciones. Para controles, seguimiento de enfermedades crónicas, pediatría, geriatría y más. No corresponde a una urgencia ni a una emergencia médica.",
+    incluye: [
+      "Clínicos, pediatras, geriatras y especialistas",
+      "Atención sin turno previo",
+      "Recetas, certificados y órdenes de laboratorio",
+      "Historial de consultas centralizado",
+    ],
+    href: "/servicios/visitas",
+    color: { bg: "bg-verde-50", border: "border-verde-100", icon: "text-verde-700", badge: "bg-verde-100 text-verde-700" },
   },
   {
     id: "traslados",
@@ -66,22 +82,6 @@ const servicios = [
     ],
     href: "/servicios/internacion",
     color: { bg: "bg-navy-50", border: "border-navy-100", icon: "text-navy-700", badge: "bg-navy-100 text-navy-700" },
-  },
-  {
-    id: "visitas",
-    emoji: "👨‍⚕️",
-    nombre: "Visitas Médicas Programadas",
-    tagline: "Tu médico en casa, cuando lo necesitás",
-    descripcion:
-      "Consultas médicas domiciliarias programadas para controles, seguimiento de enfermedades crónicas, pediatría, geriatría y más. Sin esperas, sin desplazamientos, con la comodidad del hogar.",
-    incluye: [
-      "Clínicos, pediatras, geriatras y especialistas",
-      "Turno en menos de 2 horas en zonas céntricas",
-      "Recetas, certificados y órdenes de laboratorio",
-      "Historial de consultas centralizado",
-    ],
-    href: "/servicios/visitas",
-    color: { bg: "bg-verde-50", border: "border-verde-100", icon: "text-verde-700", badge: "bg-verde-100 text-verde-700" },
   },
   {
     id: "area-protegida",
@@ -193,7 +193,7 @@ export const head: DocumentHead = {
     {
       name: "description",
       content:
-        "Emergencias, urgencias, traslados sanitarios, internación domiciliaria, visitas médicas programadas y Área Protegida en Buenos Aires y AMBA.",
+        "Emergencias, urgencias, traslados sanitarios, internación domiciliaria, visitas médicas y Área Protegida en Buenos Aires y AMBA.",
     },
   ],
 };

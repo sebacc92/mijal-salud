@@ -1,6 +1,7 @@
 import { component$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
-import { TELEFONO_EMERGENCIAS, TELEFONO_HREF, WHATSAPP_ATENCION } from "~/lib/constants";
+import { TELEFONO_EMERGENCIAS, TELEFONO_HREF, WHATSAPP_CLIENTES } from "~/lib/constants";
+import { TiemposRespuesta } from "~/components/servicios/TiemposRespuesta";
 
 export default component$(() => {
   return (
@@ -17,14 +18,16 @@ export default component$(() => {
             Emergencias <span class="text-red-300">Médicas</span>
           </h1>
           <p class="text-white/75 font-body text-body-lg mb-8 max-w-2xl mx-auto">
-            Ante una situación de riesgo de vida, cada segundo cuenta. 
-            Nuestro equipo médico llega a tu domicilio en el menor tiempo posible.
+            Emergencia médica. Staff profesional altamente capacitado. Coordinación
+            permanente con hospitales y guardias ante eventuales derivaciones.
+            Médicos en cabina de apoyo las 24 horas. Despacho inmediato de unidades
+            médicas con personal especializado.
           </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <a href={TELEFONO_HREF} class="flex items-center justify-center gap-3 bg-red-500 hover:bg-red-600 text-white font-display font-bold text-xl px-8 py-5 rounded-2xl shadow-cta hover:shadow-cta-hover transition-all duration-200 animate-pulse-slow">
               📞 {TELEFONO_EMERGENCIAS}
             </a>
-            <a href={WHATSAPP_ATENCION} target="_blank" rel="noopener noreferrer"
+            <a href={WHATSAPP_CLIENTES} target="_blank" rel="noopener noreferrer"
               class="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-display font-semibold px-8 py-5 rounded-2xl transition-all duration-200">
               WhatsApp Emergencias
             </a>
@@ -76,7 +79,6 @@ export default component$(() => {
                   "Electrocardiograma portátil",
                   "Equipamiento de última tecnología",
                   "Coordinación con guardias hospitalarias",
-                  "Traslado en ambulancia incluido si es necesario",
                 ].map((item) => (
                   <li key={item} class="flex items-start gap-3">
                     <div class="w-5 h-5 bg-red-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">
@@ -89,24 +91,7 @@ export default component$(() => {
                 ))}
               </ul>
             </div>
-            <div class="bg-navy-900 rounded-3xl p-8 text-white">
-              <h3 class="font-display font-bold text-xl mb-6">Nuestros tiempos de respuesta</h3>
-              <div class="space-y-4">
-                {[
-                  { zona: "CABA (zonas céntricas)", tiempo: "8-15 min" },
-                  { zona: "CABA (zonas periféricas)", tiempo: "15-25 min" },
-                  { zona: "GBA Norte / Sur / Oeste", tiempo: "20-35 min" },
-                ].map((t) => (
-                  <div key={t.zona} class="flex items-center justify-between bg-white/5 rounded-xl p-4">
-                    <span class="text-white/70 font-body text-sm">{t.zona}</span>
-                    <span class="font-display font-black text-verde-400 text-lg">{t.tiempo}</span>
-                  </div>
-                ))}
-              </div>
-              <p class="text-white/40 text-xs font-body mt-5 text-center">
-                * Tiempos estimados, pueden variar según tráfico y condiciones climáticas
-              </p>
-            </div>
+            <TiemposRespuesta />
           </div>
         </div>
       </section>
