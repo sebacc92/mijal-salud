@@ -21,7 +21,7 @@ const beneficios = [
   {
     emoji: "🤝",
     titulo: "Equipo comprometido",
-    desc: "Más de 20 años de trayectoria con un equipo humano excepcional.",
+    desc: `Más de ${new Date().getFullYear() - 2001} años de trayectoria con un equipo humano excepcional.`,
   },
 ];
 
@@ -51,7 +51,7 @@ export default component$(() => {
             Sumate al equipo <span class="text-verde-400">Mijal Salud</span>
           </h1>
           <p class="text-white/70 font-body text-body-lg max-w-2xl mx-auto">
-            Trabajá con más de 20 años de experiencia en el sector. Hacé la
+            Trabajá con más de {new Date().getFullYear() - 2001} años de experiencia en el sector. Hacé la
             diferencia todos los días en la vida de nuestros pacientes.
           </p>
         </div>
@@ -125,7 +125,7 @@ export const head: DocumentHead = {
     {
       name: "description",
       content:
-        "Buscamos médicos, enfermeros, paramédicos y personal administrativo. Trabajá con más de 20 años de experiencia en salud domiciliaria.",
+        `Buscamos médicos, enfermeros, paramédicos y personal administrativo. Trabajá con más de ${new Date().getFullYear() - 2001} años de experiencia en salud domiciliaria.`,
     },
   ],
 };

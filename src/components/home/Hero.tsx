@@ -9,7 +9,7 @@ import coverImg from "~/media/mijal-linkedin-portada.webp";
 const taglines = [
   "Tu médico, a un click de distancia",
   "Emergencias · Urgencias · Prevención",
-  "Más de 20 años cuidando la salud",
+  `Más de ${new Date().getFullYear() - 2001} años cuidando la salud`,
 ];
 
 export const Hero = component$(() => {

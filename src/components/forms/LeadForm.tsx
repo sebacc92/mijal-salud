@@ -1,12 +1,18 @@
 import { component$, useSignal, $ } from "@builder.io/qwik";
 import { isValidEmail } from "~/lib/utils";
 
-const servicios = [
+const serviciosB2C = [
   { value: "salud-directa", label: "Mijal Salud Directa" },
   { value: "care-ia", label: "Mijal Care IA" },
   { value: "prevencion-activa", label: "Mijal Prevención Activa" },
   { value: "salud-360", label: "Mijal Salud 360" },
   { value: "conecta-salud", label: "Mijal Conecta Salud" },
+];
+
+const serviciosB2B = [
+  { value: "cobertura-evento", label: "Cobertura de evento" },
+  { value: "area-protegida", label: "Área protegida" },
+  { value: "proteccion-empresa", label: "Protección para tu empresa" },
 ];
 
 const segmentos = [
@@ -17,10 +23,11 @@ const segmentos = [
 
 interface LeadFormProps {
   servicioDefault?: string;
+  isB2B?: boolean;
 }
 
 export const LeadForm = component$<LeadFormProps>(
-  ({ servicioDefault = "" }) => {
+  ({ servicioDefault = "", isB2B = false }) => {
     const nombre = useSignal("");
     const email = useSignal("");
     const telefono = useSignal("");
@@ -161,7 +168,7 @@ export const LeadForm = component$<LeadFormProps>(
                 errors.value.servicio ? "border-red-300" : "border-gris-200 focus:border-verde-400"]}
             >
               <option value="">Seleccionar...</option>
-              {servicios.map((s) => (
+              {(isB2B ? serviciosB2B : serviciosB2C).map((s) => (
                 <option key={s.value} value={s.value}>{s.label}</option>
               ))}
             </select>

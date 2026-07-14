@@ -51,7 +51,7 @@ export const Footer = component$(() => {
               />
             </div>
             <p class="text-white/60 font-body text-sm leading-relaxed mb-6">
-              Más de 20 años brindando atención médica domiciliaria de
+              Más de {new Date().getFullYear() - 2001} años brindando atención médica domiciliaria de
               excelencia en Buenos Aires y el AMBA.
             </p>
             <div class="flex items-center gap-3">
@@ -166,7 +166,7 @@ export const Footer = component$(() => {
               <span>© {year} Mijal Salud S.A. · Todos los derechos reservados</span>
               <span class="hidden sm:inline">·</span>
               <a
-                href="/2026PCMIJAL.pdf"
+                href="/politicas-de-calidad"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="hover:text-verde-450 font-semibold transition-colors"

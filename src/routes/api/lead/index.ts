@@ -8,6 +8,9 @@ const serviciosValidos = [
   "prevencion-activa",
   "salud-360",
   "conecta-salud",
+  "area-protegida",
+  "cobertura-evento",
+  "proteccion-empresa",
 ];
 
 const segmentosValidos = ["particular", "empresa", "obra-social"];

@@ -213,6 +213,18 @@ export const instagramPosts = sqliteTable('instagram_posts', {
   timestamp: text('timestamp'),
 });
 
+// ─── SITE SETTINGS (Configuración general del sitio, clave-valor) ─────────────
+export const siteSettings = sqliteTable("site_settings", {
+  key: text("key").primaryKey(), // 'politica_calidad_pdf' | ...
+  value: text("value").notNull(),
+  updatedAt: text("updated_at")
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .notNull(),
+});
+
+export type SiteSetting = typeof siteSettings.$inferSelect;
+export type NewSiteSetting = typeof siteSettings.$inferInsert;
+
 // ─── CONFIGURACION DE NUEVOS SERVICIOS (HOME CARDS) ───────────────────────────
 export const newServicesSettings = sqliteTable("new_services_settings", {
   id: text("id").primaryKey(), // 'salud-directa' | 'care-ia' | 'prevencion-activa' | 'salud-360' | 'conecta-salud'

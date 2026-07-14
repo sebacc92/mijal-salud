@@ -15,7 +15,7 @@ export const FACEBOOK_URL = "https://www.facebook.com/mijalsalud/";
 
 // ─── Estadísticas ─────────────────────────────────────────────────────────
 export const STATS = {
-  anos: 20,
+  anos: new Date().getFullYear() - 2001,
   atenciones: 28957,
   partners: 36,
   horasStr: "24/7",
@@ -120,4 +120,4 @@ export const NUEVOS_SERVICIOS = [
 export const SITE_NAME = "Mijal Salud";
 export const SITE_URL = "https://mijalsalud.com.ar";
 export const SITE_DESCRIPTION =
-  "Más de 20 años brindando atención médica domiciliaria de excelencia: emergencias, urgencias, traslados e internación en Buenos Aires y AMBA.";
+  `Más de ${new Date().getFullYear() - 2001} años brindando atención médica domiciliaria de excelencia: emergencias, urgencias, traslados e internación en Buenos Aires y AMBA.`;

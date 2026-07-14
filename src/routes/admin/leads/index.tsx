@@ -131,6 +131,9 @@ export default component$(() => {
             <option value="prevencion-activa">Prevención Activa</option>
             <option value="salud-360">Mijal Salud 360</option>
             <option value="conecta-salud">Conecta Salud</option>
+            <option value="area-protegida">Área protegida</option>
+            <option value="cobertura-evento">Cobertura de evento</option>
+            <option value="proteccion-empresa">Protección para tu empresa</option>
           </select>
         </div>
 

@@ -113,8 +113,8 @@ export default component$(() => {
             Nuestros <span class="text-verde-400">Servicios</span>
           </h1>
           <p class="text-white/70 font-body text-body-lg max-w-2xl mx-auto">
-            Atención médica domiciliaria integral en Buenos Aires y AMBA. Más de
-            20 años de trayectoria con el más alto nivel profesional.
+            Atención médica domiciliaria integral en Buenos Aires y AMBA. Más de{" "}
+            {new Date().getFullYear() - 2001} años de trayectoria con el más alto nivel profesional.
           </p>
         </div>
       </section>

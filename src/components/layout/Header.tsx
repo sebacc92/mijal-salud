@@ -19,7 +19,6 @@ const navLinks = [
   { label: "Inicio", href: "/" },
   { label: "Nosotros", href: "/nosotros" },
   { label: "Servicios", href: "/servicios" },
-  { label: "Soluciones", href: "/soluciones" },
   { label: "Empresas", href: "/empresas" },
   { label: "Sumate", href: "/sumate" },
   { label: "Contacto", href: "/contacto" },
