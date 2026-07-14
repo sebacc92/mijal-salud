@@ -40,8 +40,12 @@ export const Testimonials = component$(({ list }: { list: Testimonio[] }) => {
             >
               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
             </svg>
-            Opiniones de la Comunidad
+            Reseñas de Google · 5 estrellas
           </div>
+          {/* TODO-RESEÑA: estas reseñas deben ser las reales de Google (5★) del
+              perfil de Mijal Salud. Contenido pendiente de envío del cliente.
+              Al recibir la URL del perfil, agregar aquí un botón "Ver reseñas en
+              Google". */}
           <h2 class="font-display text-h2 text-navy-900 mb-4 tracking-tight">
             Lo que dicen quienes <span class="text-verde-500">nos eligieron</span>
           </h2>

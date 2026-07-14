@@ -158,55 +158,39 @@ export const useHomeLoader = routeLoader$(async () => {
       .where(eq(schema.testimonios.activo, true));
 
     if (dbTestimonios.length === 0) {
+      // TODO-RESEÑA: reemplazar estos placeholders por las reseñas reales de
+      // Google (5★) del perfil de Mijal Salud. Pendiente: el cliente enviará
+      // los textos/capturas. Se pueden cargar/editar desde el panel de admin
+      // (/admin/testimonios) o actualizando este seed.
       const seedTestimonios = [
         {
-          id: "seed-test-1",
-          nombre: "Martina García",
-          cargo: "Gerente de RRHH",
-          empresa: "Grupo Clarín",
-          texto: "Implementamos Área Protegida para nuestros eventos internos. El equipo de Mijal Salud respondió de manera impecable en dos situaciones que se presentaron. Profesionalismo total.",
+          id: "seed-resena-1",
+          nombre: "TODO-RESEÑA · Nombre del cliente",
+          cargo: "Reseña de Google",
+          empresa: null,
+          texto: "TODO-RESEÑA — pegar aquí el texto real de la reseña de Google (5 estrellas) del perfil de Mijal Salud.",
           rating: 5,
-          avatar: "MG",
+          avatar: "★",
           activo: true,
         },
         {
-          id: "seed-test-2",
-          nombre: "Roberto Fernández",
-          cargo: "Paciente",
-          empresa: "Buenos Aires",
-          texto: "A mi padre le dieron un turno de visita médica a domicilio en menos de 2 horas. El médico fue muy amable y profesional. Lo recomendaría a cualquier familia.",
+          id: "seed-resena-2",
+          nombre: "TODO-RESEÑA · Nombre del cliente",
+          cargo: "Reseña de Google",
+          empresa: null,
+          texto: "TODO-RESEÑA — pegar aquí el texto real de la reseña de Google (5 estrellas) del perfil de Mijal Salud.",
           rating: 5,
-          avatar: "RF",
+          avatar: "★",
           activo: true,
         },
         {
-          id: "seed-test-3",
-          nombre: "Laura Suárez",
-          cargo: "Directora Médica",
-          empresa: "OSDE",
-          texto: "Trabajamos con Mijal Salud hace más de 8 años. Su capacidad de respuesta y la calidad de su equipo médico los hace un partner indispensable para nuestra obra social.",
+          id: "seed-resena-3",
+          nombre: "TODO-RESEÑA · Nombre del cliente",
+          cargo: "Reseña de Google",
+          empresa: null,
+          texto: "TODO-RESEÑA — pegar aquí el texto real de la reseña de Google (5 estrellas) del perfil de Mijal Salud.",
           rating: 5,
-          avatar: "LS",
-          activo: true,
-        },
-        {
-          id: "seed-test-4",
-          nombre: "Diego Morales",
-          cargo: "CEO",
-          empresa: "TechBa S.A.",
-          texto: "Contratamos el programa de Prevención Activa para nuestros 120 empleados. El ausentismo bajó un 40% en el primer trimestre. Los números hablan solos.",
-          rating: 5,
-          avatar: "DM",
-          activo: true,
-        },
-        {
-          id: "seed-test-5",
-          nombre: "Ana Benitez",
-          cargo: "Familiar",
-          empresa: "Palermo, CABA",
-          texto: "Mi mamá estuvo con internación domiciliaria por 3 semanas. El equipo de Mijal Salud la acompañó con una calidez y profesionalismo que nunca esperé. Gracias infinitas.",
-          rating: 5,
-          avatar: "AB",
+          avatar: "★",
           activo: true,
         },
       ];
