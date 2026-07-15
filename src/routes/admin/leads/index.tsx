@@ -1,4 +1,4 @@
-import { component$, useSignal, useComputed$, Fragment } from "@builder.io/qwik";
+import { component$, useSignal, useComputed$ } from "@builder.io/qwik";
 import { routeLoader$, routeAction$, zod$, z } from "@builder.io/qwik-city";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { getDb, schema } from "~/db";
@@ -93,6 +93,12 @@ function formatExact(iso: string): string {
     hour: "2-digit",
     minute: "2-digit",
   });
+}
+
+// Escapa un valor para una celda CSV (comillas, comas y saltos de línea).
+function csvCell(value: unknown): string {
+  const s = value == null ? "" : String(value);
+  return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }
 
 // ¿El lead cae dentro del rango elegido? "" = cualquier fecha.
@@ -249,6 +255,50 @@ export default component$(() => {
             Revisá y gestioná las personas interesadas en planes y servicios corporativos/particulares.
           </p>
         </div>
+        <button
+          type="button"
+          disabled={visibleLeads.value.length === 0}
+          onClick$={() => {
+            const headers = [
+              "Nombre", "Email", "Teléfono", "Empresa", "Servicio",
+              "Segmento", "Mensaje", "Origen", "Estado", "Fecha", "ID",
+            ];
+            const lines = [headers.join(",")];
+            for (const l of visibleLeads.value) {
+              lines.push(
+                [
+                  csvCell(l.nombre),
+                  csvCell(l.email),
+                  csvCell(l.telefono),
+                  csvCell(l.empresa),
+                  csvCell(l.servicio),
+                  csvCell(l.segmento),
+                  csvCell(l.mensaje),
+                  csvCell(l.origen),
+                  csvCell(l.estado || "nuevo"),
+                  csvCell(formatExact(l.createdAt)),
+                  csvCell(l.id),
+                ].join(","),
+              );
+            }
+            const csv = "\uFEFF" + lines.join("\r\n");
+            const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `leads-mijal-${new Date().toISOString().slice(0, 10)}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+          }}
+          class="inline-flex items-center gap-2 bg-white border border-slate-200 hover:border-verde-400 hover:text-verde-700 disabled:opacity-50 disabled:hover:border-slate-200 disabled:hover:text-navy-900 text-navy-900 font-display font-semibold text-sm px-4 py-2.5 rounded-xl shadow-sm transition-colors self-start shrink-0"
+        >
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width={2}>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Exportar CSV ({visibleLeads.value.length})
+        </button>
       </div>
 
       {/* Contadores por estado (clickeables = filtro rápido) */}
