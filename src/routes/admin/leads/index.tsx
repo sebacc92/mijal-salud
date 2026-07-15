@@ -59,6 +59,56 @@ const WA_PATH =
 const GRID_COLS =
   "lg:grid-cols-[1.3fr_1.9fr_1.3fr_1.7fr_1fr_1.15fr_2.5rem]";
 
+// ─── Utilidades de fecha ────────────────────────────────────────────────────
+// createdAt viene como "YYYY-MM-DD HH:MM:SS" (UTC) o ISO; se normaliza a UTC.
+function parseDate(iso: string): Date {
+  return new Date(iso.includes("T") ? iso : iso.replace(" ", "T") + "Z");
+}
+
+function formatRelative(iso: string): string {
+  const d = parseDate(iso);
+  if (isNaN(d.getTime())) return "—";
+  const sec = Math.round((Date.now() - d.getTime()) / 1000);
+  if (sec < 60) return "recién";
+  const min = Math.round(sec / 60);
+  if (min < 60) return `hace ${min} min`;
+  const hr = Math.round(min / 60);
+  if (hr < 24) return `hace ${hr} h`;
+  const day = Math.round(hr / 24);
+  if (day === 1) return "ayer";
+  if (day < 30) return `hace ${day} días`;
+  const month = Math.round(day / 30);
+  if (month < 12) return `hace ${month} ${month === 1 ? "mes" : "meses"}`;
+  const year = Math.round(day / 365);
+  return `hace ${year} ${year === 1 ? "año" : "años"}`;
+}
+
+function formatExact(iso: string): string {
+  const d = parseDate(iso);
+  if (isNaN(d.getTime())) return "—";
+  return d.toLocaleString("es-AR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+// ¿El lead cae dentro del rango elegido? "" = cualquier fecha.
+function matchesDateRange(iso: string, range: string): boolean {
+  if (!range) return true;
+  const created = parseDate(iso).getTime();
+  if (isNaN(created)) return false;
+  if (range === "hoy") {
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+    return created >= start.getTime();
+  }
+  const days = range === "7d" ? 7 : 30;
+  return Date.now() - created <= days * 24 * 60 * 60 * 1000;
+}
+
 // 1. CARGADOR DE LEADS
 export const useLeadsLoader = routeLoader$(async () => {
   try {
@@ -121,6 +171,8 @@ export default component$(() => {
   const serviceFilter = useSignal("");
   const segmentFilter = useSignal("");
   const statusFilter = useSignal("");
+  const dateFilter = useSignal(""); // "" | "hoy" | "7d" | "30d"
+  const sortDir = useSignal<"desc" | "asc">("desc");
   const expandedId = useSignal<string | null>(null);
 
   // Conteo por estado (sobre todos los leads, para los contadores).
@@ -155,9 +207,27 @@ export default component$(() => {
         segmentFilter.value === "" || lead.segmento === segmentFilter.value;
       const matchesStatus =
         statusFilter.value === "" || (lead.estado || "nuevo") === statusFilter.value;
+      const matchesDate = matchesDateRange(lead.createdAt, dateFilter.value);
 
-      return matchesSearch && matchesService && matchesSegment && matchesStatus;
+      return (
+        matchesSearch &&
+        matchesService &&
+        matchesSegment &&
+        matchesStatus &&
+        matchesDate
+      );
     });
+  });
+
+  // Orden por fecha según el header clickeable.
+  const visibleLeads = useComputed$(() => {
+    const arr = [...filteredLeads.value];
+    arr.sort((a, b) => {
+      const ta = parseDate(a.createdAt).getTime();
+      const tb = parseDate(b.createdAt).getTime();
+      return sortDir.value === "asc" ? ta - tb : tb - ta;
+    });
+    return arr;
   });
 
   const anyFilterActive = useComputed$(
@@ -165,7 +235,8 @@ export default component$(() => {
       searchFilter.value !== "" ||
       serviceFilter.value !== "" ||
       segmentFilter.value !== "" ||
-      statusFilter.value !== "",
+      statusFilter.value !== "" ||
+      dateFilter.value !== "",
   );
 
   return (
@@ -221,7 +292,7 @@ export default component$(() => {
       </div>
 
       {/* Barra de Filtros */}
-      <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Buscador */}
         <div class="relative">
           <label class="block text-[10px] font-bold text-slate-450 uppercase tracking-wider mb-1.5 font-body">Buscar por texto</label>
@@ -263,6 +334,21 @@ export default component$(() => {
             <option value="obra-social">Obra Social / Prepaga</option>
           </select>
         </div>
+
+        {/* Filtrar por Fecha */}
+        <div>
+          <label class="block text-[10px] font-bold text-slate-450 uppercase tracking-wider mb-1.5 font-body">Fecha</label>
+          <select
+            value={dateFilter.value}
+            onChange$={(e) => (dateFilter.value = (e.target as HTMLSelectElement).value)}
+            class="w-full border border-slate-200 focus:border-verde-500 rounded-xl px-4 py-2.5 text-sm outline-none transition-colors font-body bg-white"
+          >
+            <option value="">Cualquier fecha</option>
+            <option value="hoy">Hoy</option>
+            <option value="7d">Últimos 7 días</option>
+            <option value="30d">Últimos 30 días</option>
+          </select>
+        </div>
       </div>
 
       {/* Lista de Leads */}
@@ -273,12 +359,24 @@ export default component$(() => {
           <div>Contacto / Empresa</div>
           <div>Interés / Segmento</div>
           <div>Mensaje</div>
-          <div>Fecha</div>
+          <div>
+            <button
+              type="button"
+              onClick$={() => (sortDir.value = sortDir.value === "desc" ? "asc" : "desc")}
+              class="flex items-center gap-1 uppercase tracking-wider text-slate-450 hover:text-navy-900 transition-colors"
+              title={sortDir.value === "desc" ? "Más nuevos primero" : "Más viejos primero"}
+            >
+              Fecha
+              <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width={3}>
+                <path stroke-linecap="round" stroke-linejoin="round" d={sortDir.value === "desc" ? "M19 9l-7 7-7-7" : "M5 15l7-7 7 7"} />
+              </svg>
+            </button>
+          </div>
           <div>Estado</div>
           <div class="text-right"></div>
         </div>
 
-        {filteredLeads.value.length === 0 ? (
+        {visibleLeads.value.length === 0 ? (
           <div class="flex flex-col items-center justify-center py-16 text-center px-6">
             <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center text-3xl mb-4">
               {anyFilterActive.value ? "🔍" : "👥"}
@@ -299,6 +397,7 @@ export default component$(() => {
                   serviceFilter.value = "";
                   segmentFilter.value = "";
                   statusFilter.value = "";
+                  dateFilter.value = "";
                 }}
                 class="mt-4 text-verde-600 hover:text-verde-700 font-semibold text-sm underline underline-offset-4"
               >
@@ -308,7 +407,7 @@ export default component$(() => {
           </div>
         ) : (
           <div class="p-3 lg:p-0 space-y-3 lg:space-y-0 lg:divide-y lg:divide-slate-100">
-            {filteredLeads.value.map((lead) => {
+            {visibleLeads.value.map((lead) => {
               const isExpanded = expandedId.value === lead.id;
               const waPhone = lead.telefono ? lead.telefono.replace(/\D/g, "") : "";
               const est = estadoInfo(lead.estado);
@@ -392,16 +491,12 @@ export default component$(() => {
                       )}
                     </div>
 
-                    {/* Fecha */}
-                    <div class="text-xs text-slate-400 font-body">
+                    {/* Fecha (relativa; exacta en el tooltip) */}
+                    <div class="text-xs text-slate-500 font-body">
                       <span class="lg:hidden block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Fecha</span>
-                      {new Date(lead.createdAt).toLocaleDateString("es-AR", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                      <span class="cursor-help border-b border-dotted border-slate-300" title={formatExact(lead.createdAt)}>
+                        {formatRelative(lead.createdAt)}
+                      </span>
                     </div>
 
                     {/* Estado */}
