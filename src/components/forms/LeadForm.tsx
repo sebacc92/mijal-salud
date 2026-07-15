@@ -1,13 +1,9 @@
 import { component$, useSignal, $ } from "@builder.io/qwik";
 import { isValidEmail } from "~/lib/utils";
+import { LEAD_SERVICIOS } from "~/lib/constants";
 
-const servicios = [
-  { value: "salud-directa", label: "Mijal Salud Directa" },
-  { value: "care-ia", label: "Mijal Care IA" },
-  { value: "prevencion-activa", label: "Mijal Prevención Activa" },
-  { value: "salud-360", label: "Mijal Salud 360" },
-  { value: "conecta-salud", label: "Mijal Conecta Salud" },
-];
+const serviciosB2C = LEAD_SERVICIOS.filter((s) => s.grupo === "b2c");
+const serviciosB2B = LEAD_SERVICIOS.filter((s) => s.grupo === "b2b");
 
 const segmentos = [
   { value: "particular", label: "Particular / Familia" },
@@ -17,10 +13,11 @@ const segmentos = [
 
 interface LeadFormProps {
   servicioDefault?: string;
+  isB2B?: boolean;
 }
 
 export const LeadForm = component$<LeadFormProps>(
-  ({ servicioDefault = "" }) => {
+  ({ servicioDefault = "", isB2B = false }) => {
     const nombre = useSignal("");
     const email = useSignal("");
     const telefono = useSignal("");
@@ -28,6 +25,7 @@ export const LeadForm = component$<LeadFormProps>(
     const servicio = useSignal(servicioDefault);
     const segmento = useSignal("");
     const mensaje = useSignal("");
+    const website = useSignal(""); // honeypot anti-bots (debe quedar vacío)
     const loading = useSignal(false);
     const success = useSignal(false);
     const errors = useSignal<Record<string, string>>({});
@@ -55,6 +53,7 @@ export const LeadForm = component$<LeadFormProps>(
             servicio: servicio.value,
             segmento: segmento.value,
             mensaje: mensaje.value.trim() || undefined,
+            website: website.value, // honeypot
           }),
         });
         if (res.ok) {
@@ -70,6 +69,18 @@ export const LeadForm = component$<LeadFormProps>(
       }
     });
 
+    const resetForm = $(() => {
+      nombre.value = "";
+      email.value = "";
+      telefono.value = "";
+      empresa.value = "";
+      servicio.value = servicioDefault;
+      segmento.value = "";
+      mensaje.value = "";
+      errors.value = {};
+      success.value = false;
+    });
+
     if (success.value) {
       return (
         <div class="flex flex-col items-center gap-4 py-10 text-center">
@@ -80,12 +91,35 @@ export const LeadForm = component$<LeadFormProps>(
           </div>
           <h3 class="font-display font-bold text-navy-900 text-xl">¡Gracias por tu interés!</h3>
           <p class="text-gris-600 font-body">Un asesor te contactará dentro de las próximas 24 horas hábiles.</p>
+          <button
+            type="button"
+            onClick$={resetForm}
+            class="mt-2 text-verde-600 hover:text-verde-700 font-display font-semibold text-sm underline underline-offset-4 transition-colors"
+          >
+            Enviar otra consulta
+          </button>
         </div>
       );
     }
 
     return (
       <form preventdefault:submit onSubmit$={handleSubmit} class="space-y-4" noValidate>
+        {/* Honeypot anti-bots: oculto para usuarios, visible para bots. */}
+        <div class="absolute left-[-9999px] top-[-9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
+          <label>
+            No completar este campo
+            <input
+              type="text"
+              name="website"
+              id="lead-website"
+              tabIndex={-1}
+              autoComplete="off"
+              value={website.value}
+              onInput$={(e) => (website.value = (e.target as HTMLInputElement).value)}
+            />
+          </label>
+        </div>
+
         {/* Nombre + Email */}
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
@@ -161,7 +195,7 @@ export const LeadForm = component$<LeadFormProps>(
                 errors.value.servicio ? "border-red-300" : "border-gris-200 focus:border-verde-400"]}
             >
               <option value="">Seleccionar...</option>
-              {servicios.map((s) => (
+              {(isB2B ? serviciosB2B : serviciosB2C).map((s) => (
                 <option key={s.value} value={s.value}>{s.label}</option>
               ))}
             </select>

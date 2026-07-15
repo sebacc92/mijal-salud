@@ -189,6 +189,10 @@ export const Partners = component$<PartnersProps>(({ partners }) => {
           <div class="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white to-transparent z-10"></div>
           <div class="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent z-10"></div>
 
+          {/* TODO-PARTNERS: cargar los logos nuevos (pendiente: archivos del
+              cliente) desde /admin/partners. Todos se renderizan normalizados
+              con el mismo alto (h-28) y object-contain para una grilla
+              consistente, sin importar el aspecto de cada archivo. */}
           <div class="animate-marquee-track">
             {hasDbPartners ? (
               <>
@@ -239,7 +243,7 @@ export const Partners = component$<PartnersProps>(({ partners }) => {
         {/* CTA a empresas */}
         <div class="text-center mt-14">
           <Link
-            href="/empresas"
+            href="/eventos"
             class="inline-flex items-center gap-1.5 font-display font-bold text-navy-600 hover:text-verde-600 transition-colors text-base"
           >
             + Empresas que confían en MIJAL SALUD

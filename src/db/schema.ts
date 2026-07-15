@@ -102,7 +102,9 @@ export type NewTestimonio = typeof testimonios.$inferInsert;
 export const users = sqliteTable("users", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+  password: text("password").notNull(), // hash PBKDF2 (formato "pbkdf2$..."); legacy: texto plano
+  role: text("role").notNull().default("admin"), // por ahora sólo existe el rol "admin"
+  lastLogin: text("last_login"), // ISO 8601 del último acceso; null si nunca ingresó
   createdAt: text("created_at")
     .default(sql`(CURRENT_TIMESTAMP)`)
     .notNull(),
@@ -212,6 +214,18 @@ export const instagramPosts = sqliteTable('instagram_posts', {
   caption: text('caption'),
   timestamp: text('timestamp'),
 });
+
+// ─── SITE SETTINGS (Configuración general del sitio, clave-valor) ─────────────
+export const siteSettings = sqliteTable("site_settings", {
+  key: text("key").primaryKey(), // 'politica_calidad_pdf' | ...
+  value: text("value").notNull(),
+  updatedAt: text("updated_at")
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .notNull(),
+});
+
+export type SiteSetting = typeof siteSettings.$inferSelect;
+export type NewSiteSetting = typeof siteSettings.$inferInsert;
 
 // ─── CONFIGURACION DE NUEVOS SERVICIOS (HOME CARDS) ───────────────────────────
 export const newServicesSettings = sqliteTable("new_services_settings", {

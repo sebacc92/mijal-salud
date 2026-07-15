@@ -192,9 +192,11 @@ export const ContactForm = component$<ContactFormProps>(
                 <option value="">Seleccionar...</option>
                 <option value="consulta-general">Consulta general</option>
                 <option value="servicios">Información de servicios</option>
-                <option value="empresas">Soluciones para empresas</option>
+                <option value="eventos">Cobertura para eventos</option>
                 <option value="obras-sociales">Obras sociales</option>
-                <option value="reclamo">Reclamo o sugerencia</option>
+                <option value="comentario-sugerencia-reclamo">
+                  Quiero hacer un comentario / sugerencia / reclamo
+                </option>
               </select>
             </div>
           </div>

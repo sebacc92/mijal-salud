@@ -1,4 +1,46 @@
-# Qwik City App ⚡️
+# Mijal Salud — Sitio web
+
+Sitio institucional de Mijal Salud S.A. construido con **Qwik + TypeScript + Tailwind** y desplegado en **Vercel**.
+
+---
+
+## ✏️ Cómo editar textos (guía rápida para el cliente)
+
+Algunos textos del sitio están separados en **archivos de contenido** para que puedas
+editarlos vos mismo desde GitHub, sin tocar código. Cuando guardás un cambio,
+Vercel vuelve a publicar el sitio **automáticamente en ~2 minutos**.
+
+### Qué archivo tocar
+
+| Qué querés cambiar | Archivo a editar |
+| --- | --- |
+| Texto legal de **Política de Privacidad** | `src/content/legal/privacidad.json` |
+| Texto legal de **Términos y Condiciones** | `src/content/legal/terminos.json` |
+| **PDF de Políticas de la Calidad** (link del footer) | Se cambia desde el **Panel de Admin → Configuración** (no hace falta tocar código) |
+| **Reseñas de Google** (Home) | Panel de Admin → Testimonios (o el seed en `src/routes/index.tsx`, marcado con `TODO-RESEÑA`) |
+
+### Cómo se edita un archivo `.json` desde GitHub (paso a paso)
+
+1. Entrá al repositorio en GitHub y abrí el archivo que querés cambiar
+   (por ejemplo `src/content/legal/privacidad.json`).
+2. Hacé clic en el **ícono del lápiz** ✏️ (arriba a la derecha, "Edit this file").
+3. Modificá **solo el texto que está entre comillas**. Respetá las comillas `"`,
+   las comas `,` y los corchetes `[ ]` y llaves `{ }` — no los borres.
+   - Para poner una palabra en **negrita**, encerrala entre dos asteriscos:
+     `**Mijal Salud S.A.**`.
+   - Cada punto de una lista es un texto entre comillas separado por coma.
+4. Abajo, escribí una breve descripción del cambio y hacé clic en
+   **"Commit changes"** (Confirmar cambios) sobre la rama `main`.
+5. Listo. En ~2 minutos el cambio queda publicado en el sitio.
+
+> ⚠️ **Importante:** si al editar borrás por error una comilla o una coma, el
+> despliegue va a fallar y el sitio no se actualiza (pero **no se rompe** la
+> versión que ya está online). Si eso pasa, deshacé el cambio o avisá al equipo
+> de desarrollo. Ante la duda, mejor consultar antes de guardar.
+
+---
+
+## Referencias
 
 - [Qwik Docs](https://qwik.dev/)
 - [Discord](https://qwik.dev/chat)

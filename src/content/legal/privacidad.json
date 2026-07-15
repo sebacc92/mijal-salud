@@ -1,0 +1,90 @@
+{
+  "titulo": "Política de",
+  "destacado": "Privacidad",
+  "actualizado": "30 de Mayo de 2026",
+  "secciones": [
+    {
+      "titulo": "1. Introducción",
+      "bloques": [
+        {
+          "tipo": "parrafo",
+          "texto": "En **Mijal Salud S.A.** nos tomamos muy en serio la privacidad de nuestros usuarios y pacientes. Esta Política de Privacidad describe cómo recopilamos, utilizamos, almacenamos y protegemos su información personal cuando visita nuestro sitio web o utiliza nuestros servicios médicos domiciliarios y digitales en el ámbito del Área Metropolitana de Buenos Aires (AMBA)."
+        }
+      ]
+    },
+    {
+      "titulo": "2. Información que Recopilamos",
+      "bloques": [
+        {
+          "tipo": "parrafo",
+          "texto": "Recopilamos información que usted nos proporciona voluntariamente a través de nuestros formularios de contacto, formularios de interés en nuevos servicios, solicitudes de empleo o mediante la contratación de nuestros servicios médicos. Esto incluye:"
+        },
+        {
+          "tipo": "lista",
+          "items": [
+            "**Datos Personales Básicos:** Nombre completo, número de documento (DNI/CUIL), dirección física de domicilio en el AMBA, y fecha de nacimiento.",
+            "**Información de Contacto:** Dirección de correo electrónico y número de teléfono (móvil o fijo).",
+            "**Información de Salud (Sensible):** En el marco de la atención médica de emergencias, urgencias e internación domiciliaria, podemos procesar síntomas descritos, antecedentes clínicos, obras sociales asociadas y datos de telemedicina con la máxima confidencialidad legal exigida.",
+            "**Información de Postulación:** Currículum vitae, experiencia laboral y especialidad médica para los profesionales que se postulan en nuestra sección \"Sumate\"."
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "3. Uso de la Información",
+      "bloques": [
+        {
+          "tipo": "parrafo",
+          "texto": "La información recopilada se utiliza exclusivamente para las siguientes finalidades:"
+        },
+        {
+          "tipo": "lista",
+          "items": [
+            "Coordinar y prestar asistencia médica de emergencias, urgencias y traslados domiciliarios.",
+            "Gestionar e individualizar los programas de internación domiciliaria y visitas médicas.",
+            "Responder a consultas recibidas a través de nuestros canales de contacto y de WhatsApp.",
+            "Procesar solicitudes de empleo y evaluar perfiles profesionales.",
+            "Mejorar continuamente nuestra plataforma digital y el ecosistema de servicios (como Mijal Care IA y Conecta Salud).",
+            "Cumplir con las obligaciones legales y regulatorias del Ministerio de Salud de la Nación y demás autoridades argentinas."
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "4. Protección y Confidencialidad",
+      "bloques": [
+        {
+          "tipo": "parrafo",
+          "texto": "Mijal Salud S.A. garantiza la implementación de medidas técnicas, organizativas y de seguridad física y lógica para evitar la alteración, pérdida, tratamiento o acceso no autorizado de sus datos personales. Todos los datos de salud son tratados bajo el estricto cumplimiento de la Ley de Protección de Datos Personales de la República Argentina (Ley N° 25.326) y el secreto profesional médico."
+        }
+      ]
+    },
+    {
+      "titulo": "5. Transferencia de Datos a Terceros",
+      "bloques": [
+        {
+          "tipo": "parrafo",
+          "texto": "No compartimos, vendemos ni alquilamos su información personal a terceros ajenos a la prestación de nuestros servicios médicos. Los datos podrán ser compartidos con su respectiva Obra Social o Empresa de Medicina Prepaga únicamente para la facturación y autorización de las prestaciones médicas brindadas, o bien por requerimiento de autoridades judiciales competentes en el marco de la normativa vigente."
+        }
+      ]
+    },
+    {
+      "titulo": "6. Derechos de los Titulares (Derechos ARCO)",
+      "bloques": [
+        {
+          "tipo": "parrafo",
+          "texto": "Usted tiene derecho a acceder, rectificar, actualizar o solicitar la supresión de sus datos personales almacenados en nuestras bases de datos de forma gratuita en intervalos no inferiores a seis meses (salvo que acredite un interés legítimo al efecto), conforme a la Ley N° 25.326. Para ejercer estos derechos, puede enviarnos un correo electrónico a **contacto@mijalsalud.com.ar** adjuntando una copia de su DNI."
+        }
+      ]
+    },
+    {
+      "titulo": "7. Cambios en esta Política",
+      "bloques": [
+        {
+          "tipo": "parrafo",
+          "texto": "Nos reservamos el derecho de actualizar o modificar esta Política de Privacidad en cualquier momento para adaptarla a novedades legislativas, jurisprudenciales o políticas comerciales de Mijal Salud S.A. Le recomendamos revisar este documento de forma periódica."
+        }
+      ]
+    }
+  ]
+}

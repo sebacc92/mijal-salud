@@ -20,7 +20,7 @@ export const StaffCTA = component$(() => {
               ¿Sos profesional de la salud o administrativo? <span class="text-verde-400">Sumate a nuestro staff</span>
             </h2>
             <p class="text-white/70 font-body text-sm lg:text-base leading-relaxed">
-              Buscamos médicos de guardia, enfermeros, paramédicos, kinesiólogos, conductores de ambulancia y personal de soporte. Mandanos tus datos y adjuntá tu CV para sumarte a un equipo líder con más de 20 años de trayectoria.
+              Buscamos médicos de guardia, enfermeros, paramédicos, kinesiólogos, conductores de ambulancia y personal de soporte. Mandanos tus datos y adjuntá tu CV para sumarte a un equipo líder con más de {new Date().getFullYear() - 2005} años de trayectoria.
             </p>
           </div>
 

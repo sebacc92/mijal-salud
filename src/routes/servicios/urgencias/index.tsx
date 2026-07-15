@@ -1,20 +1,21 @@
 import { component$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { WHATSAPP_ATENCION, TELEFONO_HREF, TELEFONO_EMERGENCIAS } from "~/lib/constants";
+import { TiemposRespuesta } from "~/components/servicios/TiemposRespuesta";
 
 export default component$(() => {
   return (
     <main class="pt-24">
       <section class="bg-navy-900 relative overflow-hidden py-20">
         <div class="absolute inset-0 bg-gradient-hero opacity-90" />
-        <div class="absolute top-0 right-0 w-96 h-96 bg-orange-400 rounded-full opacity-10 blur-3xl" />
+        <div class="absolute top-0 right-0 w-96 h-96 bg-amber-400 rounded-full opacity-10 blur-3xl" />
         <div class="relative container mx-auto px-6 lg:px-12 max-w-3xl text-center">
-          <div class="inline-flex items-center gap-2 bg-orange-500/20 border border-orange-400/40 rounded-full px-4 py-2 mb-8">
-            <span class="w-2 h-2 bg-orange-400 rounded-full animate-pulse" />
-            <span class="text-orange-200 text-sm font-body font-medium">Disponible 24 horas · 365 días del año</span>
+          <div class="inline-flex items-center gap-2 bg-amber-500/20 border border-amber-400/40 rounded-full px-4 py-2 mb-8">
+            <span class="w-2 h-2 bg-amber-400 rounded-full animate-pulse" />
+            <span class="text-amber-200 text-sm font-body font-medium">Disponible 24 horas · 365 días del año</span>
           </div>
           <h1 class="font-display text-h1 text-white mb-5">
-            Urgencias <span class="text-orange-300">Médicas</span>
+            Urgencias <span class="text-amber-300">Médicas</span>
           </h1>
           <p class="text-white/75 font-body text-body-lg mb-8 max-w-2xl mx-auto">
             Cuando no puede esperar, pero tampoco es riesgo de vida inmediato. 
@@ -51,7 +52,7 @@ export default component$(() => {
               { emoji: "👁️", label: "Problemas visuales o auditivos repentinos" },
               { emoji: "💊", label: "Necesidad urgente de medicación controlada" },
             ].map((item) => (
-              <div key={item.label} class="flex items-center gap-3 bg-orange-50 border border-orange-100 rounded-xl p-4">
+              <div key={item.label} class="flex items-center gap-3 bg-amber-50 border border-amber-100 rounded-xl p-4">
                 <span class="text-2xl shrink-0">{item.emoji}</span>
                 <span class="font-body text-gris-700 text-sm font-medium">{item.label}</span>
               </div>
@@ -68,8 +69,21 @@ export default component$(() => {
         </div>
       </section>
 
-      {/* Proceso */}
+      {/* Tiempos de respuesta */}
       <section class="py-section bg-gris-50">
+        <div class="container mx-auto px-6 lg:px-12 max-w-3xl">
+          <div class="text-center mb-10">
+            <h2 class="font-display text-h2 text-navy-900 mb-4">Tiempos de respuesta</h2>
+            <p class="text-gris-600 font-body text-body-lg max-w-xl mx-auto">
+              Priorizamos cada caso según su código de urgencia.
+            </p>
+          </div>
+          <TiemposRespuesta titulo="Según código de prioridad" />
+        </div>
+      </section>
+
+      {/* Proceso */}
+      <section class="py-section bg-white">
         <div class="container mx-auto px-6 lg:px-12 max-w-4xl">
           <div class="text-center mb-12">
             <h2 class="font-display text-h2 text-navy-900 mb-4">Cómo funciona</h2>

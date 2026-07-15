@@ -75,17 +75,10 @@ export const Gallery = component$(({ images }: GalleryProps) => {
 
       <div class="relative z-10 container mx-auto max-w-7xl">
         {/* Section header */}
-        <div class="flex flex-col items-center mb-16 text-center">
-          <div class="inline-flex items-center gap-2 bg-verde-500/10 border border-verde-500/20 rounded-full px-3 py-1 mb-4">
+        <div class="flex flex-col items-center mb-8 text-center">
+          <div class="inline-flex items-center gap-2 bg-verde-500/10 border border-verde-500/20 rounded-full px-3 py-1">
             <span class="text-verde-600 text-xs font-body font-semibold uppercase tracking-wider">Galería de Fotos</span>
           </div>
-          <h2 class="font-display font-bold text-3xl md:text-4xl lg:text-5xl text-navy-950">
-            Nuestra <span class="text-verde-500">Infraestructura & Equipamiento</span>
-          </h2>
-          <p class="text-slate-600 font-body text-sm md:text-base max-w-lg mt-4 leading-relaxed">
-            Un recorrido visual por nuestras modernas ambulancias, oficinas operativas y equipamiento de alta tecnología.
-          </p>
-          <div class="w-16 h-1 bg-verde-500 mt-6 rounded-full" />
         </div>
 
         {/* Grid */}

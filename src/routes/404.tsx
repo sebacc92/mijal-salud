@@ -51,7 +51,7 @@ export default component$(() => {
           <div class="flex flex-wrap gap-2 justify-center">
             {[
               { label: "Servicios", href: "/servicios" },
-              { label: "Empresas", href: "/empresas" },
+              { label: "Eventos", href: "/eventos" },
               { label: "Portal", href: "/portal" },
             ].map((l) => (
               <Link

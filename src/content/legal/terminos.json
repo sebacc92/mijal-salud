@@ -1,0 +1,86 @@
+{
+  "titulo": "Términos y",
+  "destacado": "Condiciones",
+  "actualizado": "30 de Mayo de 2026",
+  "secciones": [
+    {
+      "titulo": "1. Aceptación de los Términos",
+      "bloques": [
+        {
+          "tipo": "parrafo",
+          "texto": "El acceso y uso de este sitio web y de los servicios provistos por **Mijal Salud S.A.** (en adelante, \"Mijal Salud\") están sujetos a los siguientes Términos y Condiciones. Al navegar por este sitio web, completar formularios o utilizar nuestras herramientas digitales, usted acepta plenamente y sin reservas estos términos. Si no está de acuerdo con alguno de ellos, le solicitamos que se abstenga de usar el sitio."
+        }
+      ]
+    },
+    {
+      "titulo": "2. Naturaleza del Sitio e Información Médica",
+      "bloques": [
+        {
+          "tipo": "parrafo",
+          "texto": "El contenido de este sitio web tiene carácter estrictamente informativo e institucional. Mijal Salud busca difundir información sobre sus servicios médicos domiciliarios, de emergencias, urgencias, traslados, internación domiciliaria y soluciones de salud digital (como Mijal Care IA y Conecta Salud)."
+        },
+        {
+          "tipo": "aviso",
+          "texto": "**⚠️ AVISO IMPORTANTE:** La información contenida en esta web o las herramientas de consulta general no reemplazan, en ningún caso, la consulta médica presencial ni el diagnóstico profesional de un médico calificado. Ante cualquier síntoma grave o duda sobre su estado de salud, debe comunicarse de inmediato con su central de emergencias al número telefónico indicado o acudir al centro asistencial más cercano."
+        }
+      ]
+    },
+    {
+      "titulo": "3. Uso de las Herramientas Digitales",
+      "bloques": [
+        {
+          "tipo": "parrafo",
+          "texto": "Usted se compromete a hacer un uso lícito y correcto de los formularios del sitio (tales como los formularios de contacto o de postulación). Específicamente, acepta:"
+        },
+        {
+          "tipo": "lista",
+          "items": [
+            "No ingresar datos falsos, inexactos o de terceros sin su debida autorización.",
+            "No utilizar el sitio para enviar spam, virus informáticos o realizar cualquier actividad que pueda dañar la infraestructura tecnológica de Mijal Salud.",
+            "Mantener bajo su custodia los datos personales introducidos en el portal privado de pacientes o empresas cuando este se encuentre activo."
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "4. Prestación de Servicios Médicos Domiciliarios",
+      "bloques": [
+        {
+          "tipo": "parrafo",
+          "texto": "La efectiva prestación de los servicios médicos domiciliarios en el AMBA (emergencias, urgencias, visitas) se rige por los contratos específicos de afiliación, los convenios vigentes con cada Obra Social o Prepaga, y los protocolos clínicos aprobados por Mijal Salud S.A."
+        },
+        {
+          "tipo": "parrafo",
+          "texto": "Los tiempos de respuesta de las ambulancias y móviles médicos son estimados y pueden verse afectados por factores de fuerza mayor no imputables a Mijal Salud, incluyendo el estado de las vías de circulación, condiciones climáticas extremas, huelgas o congestión extrema del tráfico vial en el AMBA."
+        }
+      ]
+    },
+    {
+      "titulo": "5. Propiedad Intelectual",
+      "bloques": [
+        {
+          "tipo": "parrafo",
+          "texto": "Todos los contenidos de este sitio, incluyendo pero no limitándose a: logotipos, marcas comerciales, diseños de interfaz, textos, gráficos, códigos fuente, íconos y software, son propiedad exclusiva de Mijal Salud S.A. o de terceros que han autorizado su uso. Queda terminantemente prohibida su reproducción, distribución o modificación sin autorización previa y por escrito de Mijal Salud."
+        }
+      ]
+    },
+    {
+      "titulo": "6. Limitación de Responsabilidad",
+      "bloques": [
+        {
+          "tipo": "parrafo",
+          "texto": "Mijal Salud realiza los mayores esfuerzos para mantener la información del sitio actualizada y libre de errores técnicos; sin embargo, no garantiza la infalibilidad del contenido ni la disponibilidad ininterrumpida de la web las 24 horas del día. Mijal Salud no será responsable por daños derivados del uso o imposibilidad de uso del sitio web, incluyendo pérdidas de datos o daños causados por virus informáticos."
+        }
+      ]
+    },
+    {
+      "titulo": "7. Jurisdicción y Ley Aplicable",
+      "bloques": [
+        {
+          "tipo": "parrafo",
+          "texto": "Estos Términos y Condiciones se rigen en todos sus puntos por las leyes vigentes de la República Argentina. Cualquier divergencia o disputa legal derivada de la interpretación o cumplimiento del presente contrato se someterá a la jurisdicción exclusiva de los Tribunales Ordinarios en lo Civil y Comercial de la Ciudad Autónoma de Buenos Aires, renunciando a cualquier otro fuero que pudiere corresponder."
+        }
+      ]
+    }
+  ]
+}

@@ -10,7 +10,7 @@ interface StatItem {
 
 const stats: StatItem[] = [
   {
-    target: 20,
+    target: new Date().getFullYear() - 2005,
     suffix: "+",
     label: "Años de trayectoria",
     descripcion: "Más de dos décadas al servicio de la salud en Argentina",
