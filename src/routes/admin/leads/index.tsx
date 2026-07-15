@@ -540,7 +540,7 @@ export default component$(() => {
                   </div>
 
                   {isExpanded && (
-                    <div class="border-t border-slate-100 bg-slate-50 p-4 lg:px-5">
+                    <div class="border-t border-slate-100 bg-slate-50 p-4 lg:px-5 space-y-4">
                       <div class="rounded-xl border border-slate-200 bg-white p-4">
                         <div class="text-[10px] font-bold text-slate-450 uppercase tracking-wider mb-1.5 font-body">
                           Mensaje completo
@@ -548,6 +548,30 @@ export default component$(() => {
                         <p class="text-sm text-slate-700 font-body leading-relaxed whitespace-pre-wrap">
                           {lead.mensaje || "— El lead no dejó mensaje —"}
                         </p>
+                      </div>
+
+                      {/* Acciones de respuesta */}
+                      <div class="flex flex-col sm:flex-row gap-3">
+                        <a
+                          href={`mailto:${lead.email}?subject=${encodeURIComponent("Re: tu consulta a Mijal Salud")}`}
+                          class="flex-1 inline-flex items-center justify-center gap-2 bg-navy-900 hover:bg-navy-800 text-white font-display font-semibold text-sm px-5 py-3 rounded-xl transition-colors"
+                        >
+                          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width={2}>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                          </svg>
+                          Responder por email
+                        </a>
+                        {waPhone && (
+                          <a
+                            href={`https://wa.me/${waPhone}?text=${encodeURIComponent(`Hola ${lead.nombre.split(" ")[0]}! Te escribimos de Mijal Salud por tu consulta.`)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="flex-1 inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-display font-semibold text-sm px-5 py-3 rounded-xl transition-colors"
+                          >
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d={WA_PATH} /></svg>
+                            Responder por WhatsApp
+                          </a>
+                        )}
                       </div>
                     </div>
                   )}
