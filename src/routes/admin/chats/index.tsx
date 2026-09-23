@@ -9,6 +9,7 @@ import type { DocumentHead } from "@builder.io/qwik-city";
 import { getDb } from "~/db";
 import { chatSessions, chatMessages, chatbotSettings } from "~/db/schema";
 import { desc, count, eq } from "drizzle-orm";
+import { resolveMediaUrl, deleteReplacedBlob } from "~/lib/blob";
 
 // 1. LOADER UNIFICADO: CARGA SESIONES Y SETTINGS
 export const useChatsLoader = routeLoader$(async () => {
@@ -90,7 +91,7 @@ export const useChatsLoader = routeLoader$(async () => {
 });
 
 // 2. ACTION: ACTUALIZAR CONFIGURACIÓN DE IA
-export const useUpdateAiSettingsAction = routeAction$(async (data) => {
+export const useUpdateAiSettingsAction = routeAction$(async (data, requestEvent) => {
   try {
     const db = getDb();
 
@@ -102,7 +103,17 @@ export const useUpdateAiSettingsAction = routeAction$(async (data) => {
     const saludo = typeof data.saludo === "string" ? data.saludo.trim() : null;
     const cta = typeof data.cta === "string" ? data.cta.trim() : null;
     const whatsapp = typeof data.whatsapp === "string" ? data.whatsapp.trim() : null;
-    const avatarUrl = typeof data.avatarUrl === "string" ? data.avatarUrl : null;
+    // El avatar llega comprimido a WebP 160x160 (pocos KB) como data URL: se
+    // sube a Blob y se guarda sólo la URL. Si ya venía como URL queda igual.
+    const rawAvatarUrl = typeof data.avatarUrl === "string" && data.avatarUrl.length > 0 ? data.avatarUrl : null;
+    const [previousSettings] = await db
+      .select({ avatarUrl: chatbotSettings.avatarUrl })
+      .from(chatbotSettings)
+      .where(eq(chatbotSettings.id, 1));
+
+    const avatarUrl = rawAvatarUrl
+      ? await resolveMediaUrl(requestEvent.env, rawAvatarUrl, "chatbot")
+      : null;
 
     const valuesToInsert = {
       id: 1,
@@ -125,6 +136,13 @@ export const useUpdateAiSettingsAction = routeAction$(async (data) => {
         target: chatbotSettings.id,
         set: valuesToInsert as any,
       });
+
+    await deleteReplacedBlob(
+      requestEvent.env,
+      previousSettings?.avatarUrl,
+      avatarUrl,
+      "avatar del chatbot",
+    );
 
     return { success: true };
   } catch (e: any) {

@@ -2,6 +2,19 @@ import { $, component$, useSignal } from '@builder.io/qwik';
 import { Link, routeAction$, routeLoader$, z, zod$, type DocumentHead } from '@builder.io/qwik-city';
 import { getDb, schema } from '~/db';
 import { eq } from 'drizzle-orm';
+import { uploadToBlob, deleteFromBlob } from '~/lib/blob';
+
+// Si el archivo llegó como data URL (subida desde el input file, ver
+// handleSubmit más abajo) se sube a Vercel Blob y se guarda esa URL. Si es una
+// URL externa (campo "o ingresar URL") se guarda tal cual.
+async function resolveMediaUrl(
+  value: string,
+  pathPrefix: string,
+  env: Parameters<typeof uploadToBlob>[0],
+): Promise<string> {
+  if (!value.startsWith('data:')) return value;
+  return uploadToBlob(env, value, pathPrefix);
+}
 
 export const useVerticalVideoLoader = routeLoader$(async (requestEvent) => {
   try {
@@ -21,18 +34,29 @@ export const useVerticalVideoLoader = routeLoader$(async (requestEvent) => {
 
 export const useEditVerticalVideoAction = routeAction$(
   async (data, requestEvent) => {
-    const finalVideoUrl = typeof data.videoUrl === 'string' && data.videoUrl.length > 0 ? data.videoUrl : undefined;
-    if (!finalVideoUrl) {
+    const rawVideoUrl = typeof data.videoUrl === 'string' && data.videoUrl.length > 0 ? data.videoUrl : undefined;
+    if (!rawVideoUrl) {
       return requestEvent.fail(400, {
         error: 'Debe proporcionar una URL de video o subir un archivo válido.',
       });
     }
 
-    const finalThumbnailUrl = typeof data.thumbnailUrl === 'string' && data.thumbnailUrl.length > 0 ? data.thumbnailUrl : undefined;
+    const rawThumbnailUrl = typeof data.thumbnailUrl === 'string' && data.thumbnailUrl.length > 0 ? data.thumbnailUrl : undefined;
 
     try {
       const db = getDb();
       const id = requestEvent.params.id;
+
+      const [existing] = await db
+        .select({ videoUrl: schema.verticalVideos.videoUrl, thumbnailUrl: schema.verticalVideos.thumbnailUrl })
+        .from(schema.verticalVideos)
+        .where(eq(schema.verticalVideos.id, id));
+
+      const finalVideoUrl = await resolveMediaUrl(rawVideoUrl, 'videos-verticales/video', requestEvent.env);
+      const finalThumbnailUrl = rawThumbnailUrl
+        ? await resolveMediaUrl(rawThumbnailUrl, 'videos-verticales/thumbnail', requestEvent.env)
+        : undefined;
+
       await db
         .update(schema.verticalVideos)
         .set({
@@ -43,13 +67,27 @@ export const useEditVerticalVideoAction = routeAction$(
           isActive: data.isActive === 'on' || data.isActive === 'true' ? 1 : 0,
         })
         .where(eq(schema.verticalVideos.id, id));
+
+      // Si el archivo fue reemplazado, borrar el blob anterior para no dejar huérfanos.
+      if (existing) {
+        if (existing.videoUrl && existing.videoUrl !== finalVideoUrl) {
+          await deleteFromBlob(requestEvent.env, existing.videoUrl).catch((error) =>
+            console.error(`Error borrando blob de video anterior (id=${id}):`, error),
+          );
+        }
+        if (existing.thumbnailUrl && existing.thumbnailUrl !== (finalThumbnailUrl || null)) {
+          await deleteFromBlob(requestEvent.env, existing.thumbnailUrl).catch((error) =>
+            console.error(`Error borrando blob de miniatura anterior (id=${id}):`, error),
+          );
+        }
+      }
     } catch (error) {
       console.error("Error updating vertical video:", error);
       return requestEvent.fail(500, {
         error: 'Error interno al guardar los cambios.',
       });
     }
-    
+
     throw requestEvent.redirect(302, '/admin/videos-verticales');
   },
   zod$({
@@ -107,12 +145,13 @@ export default component$(() => {
       const videoInput = element.querySelector('#videoFile') as HTMLInputElement;
       const thumbnailInput = element.querySelector('#thumbnailFile') as HTMLInputElement;
 
-      // Handle video file base64 read
+      // Lee el video como data URL sólo para transportarlo a la action; el
+      // guardado real es a Vercel Blob (ver resolveMediaUrl más arriba).
       if (videoInput?.files && videoInput.files.length > 0) {
         const file = videoInput.files[0];
-        
-        if (file.size > 10 * 1024 * 1024) {
-          throw new Error("El archivo de video supera el límite de 10MB. Para videos grandes, utilizá una URL externa.");
+
+        if (file.size > 50 * 1024 * 1024) {
+          throw new Error("El archivo de video supera el límite de 50MB. Para videos grandes, utilizá una URL externa.");
         }
 
         const reader = new FileReader();
@@ -124,9 +163,14 @@ export default component$(() => {
         videoUrl = await base64Promise;
       }
 
-      // Handle thumbnail file base64 read
+      // Idem para la miniatura
       if (thumbnailInput?.files && thumbnailInput.files.length > 0) {
         const file = thumbnailInput.files[0];
+
+        if (file.size > 5 * 1024 * 1024) {
+          throw new Error("La imagen de portada supera el límite de 5MB.");
+        }
+
         const reader = new FileReader();
         const base64Promise = new Promise<string>((resolve, reject) => {
           reader.onload = () => resolve(reader.result as string);
@@ -216,7 +260,7 @@ export default component$(() => {
           <div class="p-5 border border-slate-150 rounded-2xl bg-slate-50/50 space-y-4">
             <h3 class="font-display font-bold text-navy-900 text-sm border-b border-slate-200 pb-2">Archivo de Video</h3>
             <div>
-              <label for="videoFile" class="block text-xs font-body font-semibold text-slate-600 mb-2">Subir Nuevo Video (Opcional, máx 10MB)</label>
+              <label for="videoFile" class="block text-xs font-body font-semibold text-slate-600 mb-2">Subir Nuevo Video (Opcional, máx 50MB)</label>
               <input
                 type="file"
                 id="videoFile"

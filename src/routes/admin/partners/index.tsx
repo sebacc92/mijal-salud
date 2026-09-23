@@ -4,6 +4,7 @@ import type { DocumentHead } from "@builder.io/qwik-city";
 import { getDb, schema } from "~/db";
 import { asc, eq } from "drizzle-orm";
 import { PartnersManager } from "~/components/admin/PartnersManager";
+import { resolveMediaUrl, deleteFromBlob } from "~/lib/blob";
 
 // 1. LOADER DE PARTNERS PARA EL ADMIN
 export const usePartnersAdminLoader = routeLoader$(async () => {
@@ -21,7 +22,12 @@ export const usePartnersAdminLoader = routeLoader$(async () => {
 });
 
 // 2. ACCIONES DE SERVIDOR (SERVER$)
-export const addPartner = server$(async function (imageUrl: string, name: string, displayOrder: number) {
+// El cliente comprime el logo a WebP 400x160 (unos pocos KB) y lo manda como
+// data URL; acá se sube a Vercel Blob y en la fila queda sólo la URL pública.
+// Al ser tan chico no necesita la subida directa desde el navegador que usan
+// los videos y la galería.
+export const addPartner = server$(async function (imageDataUrl: string, name: string, displayOrder: number) {
+  const imageUrl = await resolveMediaUrl(this.env, imageDataUrl, "partners");
   const db = getDb();
   const [newRow] = await db
     .insert(schema.partners)
@@ -44,7 +50,18 @@ export const updatePartnerName = server$(async function (id: number, name: strin
 
 export const deletePartner = server$(async function (id: number) {
   const db = getDb();
+  const [row] = await db
+    .select({ imageUrl: schema.partners.imageUrl })
+    .from(schema.partners)
+    .where(eq(schema.partners.id, id));
+
   await db.delete(schema.partners).where(eq(schema.partners.id, id));
+
+  try {
+    await deleteFromBlob(this.env, row?.imageUrl);
+  } catch (error) {
+    console.error(`Error borrando blob de partner (id=${id}):`, error);
+  }
 });
 
 export const reorderPartners = server$(async function (ids: number[]) {

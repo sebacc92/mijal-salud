@@ -4,6 +4,8 @@ import {
   deleteGalleryImage,
   reorderGalleryImages,
 } from '~/routes/admin/galeria/index';
+import { uploadFileToBlob } from '~/lib/blob-client';
+import { BLOB_PREFIXES, formatMb } from '~/lib/blob-shared';
 
 interface GalleryImage {
   id: number;
@@ -20,45 +22,45 @@ export const MultiGalleryUploader = component$<MultiGalleryUploaderProps>(({ ima
     images: GalleryImage[];
     isUploading: boolean;
     uploadError: string | null;
+    uploadCurrent: number;
+    uploadTotal: number;
+    uploadPercentage: number;
     draggingIdx: number | null;
     dragOverIdx: number | null;
   }>(() => ({
     images: images.map((img) => ({ ...img })),
     isUploading: false,
     uploadError: null,
+    uploadCurrent: 0,
+    uploadTotal: 0,
+    uploadPercentage: 0,
     draggingIdx: null,
     dragOverIdx: null,
   }));
 
-  // ── Upload (Client Side FileReader -> Base64) ──────────────────────────────
+  // ── Upload ──────────────────────────────────────────────────────────────────
+  // El archivo va directo del navegador a Vercel Blob y recién después se
+  // guarda la URL en la base. Antes viajaba como Base64 dentro del server$, lo
+  // que reventaba el límite de body de la función Edge con fotos grandes.
   const handleUpload$ = $(async (e: Event, el: HTMLInputElement) => {
     const files = el.files;
     if (!files || files.length === 0) return;
 
     state.isUploading = true;
     state.uploadError = null;
+    state.uploadTotal = files.length;
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-
-      // Validate size (limit to 4MB for DB efficiency)
-      if (file.size > 4 * 1024 * 1024) {
-        state.uploadError = `El archivo "${file.name}" supera el límite de 4MB.`;
-        continue;
-      }
-
-      // Convert to Base64 in browser
-      const reader = new FileReader();
-      const base64Promise = new Promise<string>((resolve, reject) => {
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = reject;
-      });
-      reader.readAsDataURL(file);
+      state.uploadCurrent = i + 1;
+      state.uploadPercentage = 0;
 
       try {
-        const base64Data = await base64Promise;
-        // Persist to DB and get back the new record
-        const newImage = await addGalleryImage(base64Data, state.images.length);
+        const imageUrl = await uploadFileToBlob(file, 'galeria', ({ percentage }) => {
+          state.uploadPercentage = percentage;
+        });
+
+        const newImage = await addGalleryImage(imageUrl, state.images.length);
 
         if (newImage) {
           // Add to local state
@@ -66,11 +68,14 @@ export const MultiGalleryUploader = component$<MultiGalleryUploaderProps>(({ ima
         }
       } catch (err: any) {
         console.error('Upload failed:', err);
-        state.uploadError = err.message || 'Error al guardar la imagen.';
+        state.uploadError = `"${file.name}": ${err.message || 'Error al guardar la imagen.'}`;
       }
     }
 
     state.isUploading = false;
+    state.uploadTotal = 0;
+    state.uploadCurrent = 0;
+    state.uploadPercentage = 0;
     el.value = '';
   });
 
@@ -196,12 +201,20 @@ export const MultiGalleryUploader = component$<MultiGalleryUploaderProps>(({ ima
       {/* File Upload Trigger */}
       <div class="flex flex-col sm:flex-row sm:items-center gap-4">
         {state.isUploading && (
-          <div class="text-sm font-semibold text-verde-600 flex items-center gap-2 font-body animate-pulse">
-            <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-            </svg>
-            Procesando y guardando imágenes...
+          <div class="flex-1 min-w-[220px]">
+            <div class="text-sm font-semibold text-verde-600 flex items-center gap-2 font-body">
+              <svg class="animate-spin h-4 w-4 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+              Subiendo imagen {state.uploadCurrent} de {state.uploadTotal} — {state.uploadPercentage}%
+            </div>
+            <div class="mt-2 h-1.5 w-full rounded-full bg-slate-150 overflow-hidden">
+              <div
+                class="h-full bg-verde-500 rounded-full transition-all duration-200"
+                style={{ width: `${state.uploadPercentage}%` }}
+              />
+            </div>
           </div>
         )}
 
@@ -220,12 +233,16 @@ export const MultiGalleryUploader = component$<MultiGalleryUploaderProps>(({ ima
           <input
             type="file"
             multiple
-            accept="image/jpeg,image/png,image/webp"
+            accept={BLOB_PREFIXES.galeria.contentTypes.join(',')}
             disabled={state.isUploading}
             onChange$={handleUpload$}
             class="sr-only"
           />
         </label>
+
+        <p class="text-xs text-slate-400 font-body">
+          JPG, PNG o WebP · máx {formatMb(BLOB_PREFIXES.galeria.maxBytes)} por foto
+        </p>
       </div>
 
       {/* Error Logs */}

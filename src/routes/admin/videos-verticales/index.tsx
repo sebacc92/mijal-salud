@@ -2,6 +2,7 @@ import { component$ } from '@builder.io/qwik';
 import { Form, Link, routeAction$, routeLoader$, z, zod$, type DocumentHead } from '@builder.io/qwik-city';
 import { getDb, schema } from '~/db';
 import { eq, asc } from 'drizzle-orm';
+import { deleteFromBlob } from '~/lib/blob';
 
 export const useVerticalVideosAdminLoader = routeLoader$(async () => {
   try {
@@ -14,10 +15,28 @@ export const useVerticalVideosAdminLoader = routeLoader$(async () => {
 });
 
 export const useDeleteVerticalVideoAction = routeAction$(
-  async (data) => {
+  async (data, requestEvent) => {
     try {
       const db = getDb();
+
+      const [existing] = await db
+        .select({ videoUrl: schema.verticalVideos.videoUrl, thumbnailUrl: schema.verticalVideos.thumbnailUrl })
+        .from(schema.verticalVideos)
+        .where(eq(schema.verticalVideos.id, data.id));
+
       await db.delete(schema.verticalVideos).where(eq(schema.verticalVideos.id, data.id));
+
+      if (existing) {
+        await Promise.all([
+          deleteFromBlob(requestEvent.env, existing.videoUrl).catch((error) =>
+            console.error(`Error borrando blob de video (id=${data.id}):`, error),
+          ),
+          deleteFromBlob(requestEvent.env, existing.thumbnailUrl).catch((error) =>
+            console.error(`Error borrando blob de miniatura (id=${data.id}):`, error),
+          ),
+        ]);
+      }
+
       return { success: true };
     } catch (error) {
       console.error("Error deleting vertical video:", error);

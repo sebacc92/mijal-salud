@@ -236,3 +236,21 @@ export const newServicesSettings = sqliteTable("new_services_settings", {
 
 export type NewServicesSettings = typeof newServicesSettings.$inferSelect;
 export type NewNewServicesSettings = typeof newServicesSettings.$inferInsert;
+
+// ─── CONTENIDO EDITABLE DE PÁGINAS (/servicios y subpáginas) ──────────────────
+// Modelo flexible: una fila por página, con el contenido estructurado guardado
+// como JSON en la columna `data`. El esquema tipado de cada página vive en
+// `src/content/servicios` (types + defaults). La base sólo guarda las
+// modificaciones hechas desde el admin; si una página no tiene fila (o la base
+// no responde) el sitio usa el contenido por defecto del código como fallback.
+// Ver también [[page-content-loader]] en src/content/servicios/loader.ts.
+export const pageContent = sqliteTable("page_content", {
+  pageId: text("page_id").primaryKey(), // 'servicios' | 'emergencias' | 'urgencias' | ...
+  data: text("data").notNull(), // JSON.stringify del objeto de contenido de la página
+  updatedAt: text("updated_at")
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .notNull(),
+});
+
+export type PageContentRow = typeof pageContent.$inferSelect;
+export type NewPageContentRow = typeof pageContent.$inferInsert;

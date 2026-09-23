@@ -14,9 +14,13 @@ import { VerticalVideo } from "~/components/home/VerticalVideo";
 import { SocialFeed } from "~/components/home/SocialFeed";
 import { getDb, schema } from "~/db";
 import { asc, desc, eq } from "drizzle-orm";
+import { publicContentCache } from "~/lib/cache";
 
 // Loader de datos para la página principal con auto-seeding de imágenes y videos
-export const useHomeLoader = routeLoader$(async () => {
+export const useHomeLoader = routeLoader$(async ({ cacheControl }) => {
+  // Mismo patrón de caché de CDN que las páginas de servicios: la mayoría de
+  // los requests se sirven cacheados sin tocar Turso.
+  publicContentCache(cacheControl);
   try {
     const db = getDb();
     

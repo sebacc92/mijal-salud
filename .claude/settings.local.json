@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git checkout *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git config *)",
+      "Bash(xargs sed -i 's/getFullYear\\(\\) - 2001/getFullYear\\(\\) - 2005/g')",
+      "Bash(npm install *)",
+      "Bash(python3 -c \"import json,sys; print\\(json.dumps\\(json.load\\(sys.stdin\\)['scripts'], indent=2, ensure_ascii=False\\)\\)\")",
+      "Bash(git --no-pager diff --stat)",
+      "Bash(git mv *)",
+      "Bash(git rm *)",
+      "Bash(grep -rlni \"plan de cobertura\\\\|planes de cobertura\\\\|planes\\\\b\\\\|precio\\\\|tarifa\\\\|mensual\\\\|desde \\\\$\\\\|/mes\" src/)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\('deps:', json.dumps\\(d.get\\('dependencies',{}\\),indent=1\\)\\); print\\('devDeps:', json.dumps\\(list\\(d.get\\('devDependencies',{}\\).keys\\(\\)\\)\\)\\)\")",
+      "Bash(npm run *)",
+      "Bash(echo \"BUILD EXIT: $?\")",
+      "Bash(break)",
+      "Bash(curl -sL http://localhost:5173/eventos)",
+      "Bash(curl -sL http://localhost:5173/)",
+      "Bash(pkill -f \"vite --mode ssr\")",
+      "Bash(pkill -f \"node.*vite\")",
+      "Bash(pkill -f vite)",
+      "Bash(echo \"=== users schema ===\"; grep -n \"users\\\\|sqliteTable\" src/db/schema.ts | head; echo \"---\"; sed -n \"/export const users/,/}\\);/p\" src/db/schema.ts *)",
+      "Bash(node ./_dbtest.mjs)",
+      "Bash(rm -f ./_dbtest.mjs /tmp/mijal-authtest.db)",
+      "Bash(git reflog *)",
+      "Bash(git fsck *)",
+      "Bash(git update-ref *)",
+      "Bash(git gc *)",
+      "Bash(curl -sL http://localhost:5173/eventos -o /tmp/eventos.html -w 'HTTP %{http_code}\\\\n')",
+      "Read(//tmp/**)",
+      "Bash(python3 -)"
+    ],
+    "additionalDirectories": [
+      "/home/seba/dev/indesign/mijal-salud/src/db"
+    ]
+  }
+}

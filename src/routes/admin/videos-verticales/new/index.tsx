@@ -1,20 +1,51 @@
-import { $, component$, useSignal } from '@builder.io/qwik';
-import { Link, routeAction$, z, zod$, type DocumentHead } from '@builder.io/qwik-city';
-import { getDb, schema } from '~/db';
-import { nanoid } from 'nanoid';
+import { $, component$, useSignal } from "@builder.io/qwik";
+import {
+  Link,
+  routeAction$,
+  z,
+  zod$,
+  type DocumentHead,
+} from "@builder.io/qwik-city";
+import { getDb, schema } from "~/db";
+import { nanoid } from "nanoid";
+import { resolveMediaUrl } from "~/lib/blob";
+import { uploadFileToBlob } from "~/lib/blob-client";
+import { BLOB_PREFIXES, formatMb } from "~/lib/blob-shared";
 
 export const useCreateVerticalVideoAction = routeAction$(
   async (data, requestEvent) => {
-    const finalVideoUrl = typeof data.videoUrl === 'string' && data.videoUrl.length > 0 ? data.videoUrl : undefined;
-    if (!finalVideoUrl) {
+    const rawVideoUrl =
+      typeof data.videoUrl === "string" && data.videoUrl.length > 0
+        ? data.videoUrl
+        : undefined;
+    if (!rawVideoUrl) {
       return requestEvent.fail(400, {
-        error: 'Debe proporcionar una URL de video o subir un archivo válido.',
+        error: "Debe proporcionar una URL de video o subir un archivo válido.",
       });
     }
 
-    const finalThumbnailUrl = typeof data.thumbnailUrl === 'string' && data.thumbnailUrl.length > 0 ? data.thumbnailUrl : undefined;
+    const rawThumbnailUrl =
+      typeof data.thumbnailUrl === "string" && data.thumbnailUrl.length > 0
+        ? data.thumbnailUrl
+        : undefined;
 
     try {
+      // Normalmente acá ya llega la URL del blob (el navegador subió directo).
+      // Se acepta igual un data URL por compatibilidad, y una URL externa
+      // pegada a mano en el campo "o ingresar URL" pasa tal cual.
+      const finalVideoUrl = await resolveMediaUrl(
+        requestEvent.env,
+        rawVideoUrl,
+        "videos-verticales/video",
+      );
+      const finalThumbnailUrl = rawThumbnailUrl
+        ? await resolveMediaUrl(
+            requestEvent.env,
+            rawThumbnailUrl,
+            "videos-verticales/thumbnail",
+          )
+        : undefined;
+
       const db = getDb();
       await db.insert(schema.verticalVideos).values({
         id: nanoid(),
@@ -22,22 +53,22 @@ export const useCreateVerticalVideoAction = routeAction$(
         videoUrl: finalVideoUrl,
         thumbnailUrl: finalThumbnailUrl || null,
         displayOrder: Number(data.displayOrder) || 0,
-        isActive: data.isActive === 'on' || data.isActive === 'true' ? 1 : 0,
+        isActive: data.isActive === "on" || data.isActive === "true" ? 1 : 0,
       });
     } catch (error) {
       console.error("Error creating vertical video:", error);
       return requestEvent.fail(500, {
-        error: 'Error interno de servidor al guardar el video.',
+        error: "Error interno de servidor al guardar el video.",
       });
     }
-    
-    throw requestEvent.redirect(302, '/admin/videos-verticales');
+
+    throw requestEvent.redirect(302, "/admin/videos-verticales");
   },
   zod$({
-    title: z.string().min(1, 'El título es requerido'),
+    title: z.string().min(1, "El título es requerido"),
     videoUrl: z.string().optional(),
     thumbnailUrl: z.string().optional(),
-    displayOrder: z.string().default('0'),
+    displayOrder: z.string().default("0"),
     isActive: z.string().optional(),
   }),
 );
@@ -46,6 +77,8 @@ export default component$(() => {
   const createAction = useCreateVerticalVideoAction();
   const isUploading = useSignal(false);
   const uploadError = useSignal<string | null>(null);
+  const uploadStage = useSignal("Preparando");
+  const uploadPercentage = useSignal(0);
 
   // Live Previews
   const videoPreview = useSignal<string>("");
@@ -84,50 +117,56 @@ export default component$(() => {
   const handleSubmit = $(async (event: Event, element: HTMLFormElement) => {
     isUploading.value = true;
     uploadError.value = null;
+    uploadStage.value = "Preparando";
+    uploadPercentage.value = 0;
 
     try {
       const formData = new FormData(element);
-      const title = formData.get('title') as string;
-      let videoUrl = formData.get('videoUrl') as string;
-      let thumbnailUrl = formData.get('thumbnailUrl') as string;
-      const displayOrder = formData.get('displayOrder') as string;
-      const isActive = formData.get('isActive') === 'on' ? 'true' : 'false';
+      const title = formData.get("title") as string;
+      let videoUrl = formData.get("videoUrl") as string;
+      let thumbnailUrl = formData.get("thumbnailUrl") as string;
+      const displayOrder = formData.get("displayOrder") as string;
+      const isActive = formData.get("isActive") === "on" ? "true" : "false";
 
-      const videoInput = element.querySelector('#videoFile') as HTMLInputElement;
-      const thumbnailInput = element.querySelector('#thumbnailFile') as HTMLInputElement;
+      const videoInput = element.querySelector(
+        "#videoFile",
+      ) as HTMLInputElement;
+      const thumbnailInput = element.querySelector(
+        "#thumbnailFile",
+      ) as HTMLInputElement;
 
-      // Handle video file base64 read
+      // Los archivos van directo del navegador a Vercel Blob y a la action sólo
+      // le llega la URL ya subida. Es lo que permite subir videos de decenas de
+      // MB: el body de la función Edge no soporta el archivo entero.
       if (videoInput?.files && videoInput.files.length > 0) {
-        const file = videoInput.files[0];
-        
-        // Limit to 10MB for local SQLite performance
-        if (file.size > 10 * 1024 * 1024) {
-          throw new Error("El archivo de video supera el límite de 10MB. Para videos grandes, utilizá una URL externa.");
-        }
-
-        const reader = new FileReader();
-        const base64Promise = new Promise<string>((resolve, reject) => {
-          reader.onload = () => resolve(reader.result as string);
-          reader.onerror = reject;
-        });
-        reader.readAsDataURL(file);
-        videoUrl = await base64Promise;
+        uploadStage.value = "Subiendo video";
+        videoUrl = await uploadFileToBlob(
+          videoInput.files[0],
+          "videos-verticales/video",
+          ({ percentage }) => {
+            uploadPercentage.value = percentage;
+          },
+        );
       }
 
-      // Handle thumbnail file base64 read
       if (thumbnailInput?.files && thumbnailInput.files.length > 0) {
-        const file = thumbnailInput.files[0];
-        const reader = new FileReader();
-        const base64Promise = new Promise<string>((resolve, reject) => {
-          reader.onload = () => resolve(reader.result as string);
-          reader.onerror = reject;
-        });
-        reader.readAsDataURL(file);
-        thumbnailUrl = await base64Promise;
+        uploadStage.value = "Subiendo portada";
+        uploadPercentage.value = 0;
+        thumbnailUrl = await uploadFileToBlob(
+          thumbnailInput.files[0],
+          "videos-verticales/thumbnail",
+          ({ percentage }) => {
+            uploadPercentage.value = percentage;
+          },
+        );
       }
+
+      uploadStage.value = "Guardando";
 
       if (!videoUrl) {
-        throw new Error("Debe subir un archivo de video o ingresar una URL de video.");
+        throw new Error(
+          "Debe subir un archivo de video o ingresar una URL de video.",
+        );
       }
 
       await createAction.submit({
@@ -139,7 +178,8 @@ export default component$(() => {
       });
     } catch (e: any) {
       console.error("Error en la subida/procesamiento:", e);
-      uploadError.value = e.message || "Hubo un error al procesar los archivos.";
+      uploadError.value =
+        e.message || "Hubo un error al procesar los archivos.";
     } finally {
       isUploading.value = false;
     }
@@ -153,12 +193,25 @@ export default component$(() => {
           href="/admin/videos-verticales"
           class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors cursor-pointer"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width={2.5}>
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5 text-slate-600"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width={2.5}
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
         </Link>
         <div>
-          <h1 class="text-2xl font-display font-bold text-navy-900">Nuevo Video Vertical</h1>
+          <h1 class="text-2xl font-display font-bold text-navy-900">
+            Nuevo Video Vertical
+          </h1>
           <p class="text-slate-500 font-body text-sm mt-1">
             Cargá un nuevo reel informativo o institucional en el reproductor.
           </p>
@@ -172,26 +225,31 @@ export default component$(() => {
           <div class="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-xl mb-6 border border-red-200 font-body flex items-start gap-2.5">
             <span class="text-base">⚠️</span>
             <div>
-              {uploadError.value || (createAction.value as any).error || 'Por favor corregí los errores en el formulario.'}
+              {uploadError.value ||
+                (createAction.value as any).error ||
+                "Por favor corregí los errores en el formulario."}
               {createAction.value?.fieldErrors && (
                 <ul class="mt-1 list-disc list-inside text-xs">
-                  {Object.entries(createAction.value.fieldErrors).map(([field, error]) => (
-                    <li key={field}>{error}</li>
-                  ))}
+                  {Object.entries(createAction.value.fieldErrors).map(
+                    ([field, error]) => (
+                      <li key={field}>{error}</li>
+                    ),
+                  )}
                 </ul>
               )}
             </div>
           </div>
         )}
 
-        <form 
-          preventdefault:submit
-          onSubmit$={handleSubmit}
-          class="space-y-6"
-        >
+        <form preventdefault:submit onSubmit$={handleSubmit} class="space-y-6">
           {/* Title */}
           <div>
-            <label for="title" class="block text-xs font-bold text-slate-450 uppercase tracking-wider mb-2 font-body">Título del Video</label>
+            <label
+              for="title"
+              class="block text-xs font-bold text-slate-450 uppercase tracking-wider mb-2 font-body"
+            >
+              Título del Video
+            </label>
             <input
               type="text"
               id="title"
@@ -204,25 +262,42 @@ export default component$(() => {
 
           {/* Video Section */}
           <div class="p-5 border border-slate-150 rounded-2xl bg-slate-50/50 space-y-4">
-            <h3 class="font-display font-bold text-navy-900 text-sm border-b border-slate-200 pb-2">Archivo de Video</h3>
+            <h3 class="font-display font-bold text-navy-900 text-sm border-b border-slate-200 pb-2">
+              Archivo de Video
+            </h3>
             <div>
-              <label for="videoFile" class="block text-xs font-body font-semibold text-slate-600 mb-2">Subir Video (MP4/WebM, máx 10MB)</label>
+              <label
+                for="videoFile"
+                class="block text-xs font-body font-semibold text-slate-600 mb-2"
+              >
+                Subir Video (MP4/WebM, máx{" "}
+                {formatMb(BLOB_PREFIXES["videos-verticales/video"].maxBytes)})
+              </label>
               <input
                 type="file"
                 id="videoFile"
                 name="videoFile"
-                accept="video/mp4,video/webm"
+                accept={BLOB_PREFIXES[
+                  "videos-verticales/video"
+                ].contentTypes.join(",")}
                 onChange$={handleVideoFileChange$}
                 class="w-full border border-slate-250 bg-white rounded-xl px-4 py-2.5 text-sm outline-none font-body file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-navy-900 file:text-white file:cursor-pointer hover:file:bg-navy-800"
               />
             </div>
             <div class="relative flex py-2 items-center">
               <div class="flex-grow border-t border-slate-250"></div>
-              <span class="flex-shrink mx-4 text-slate-400 text-xs font-bold uppercase tracking-wider font-body">o ingresar URL</span>
+              <span class="flex-shrink mx-4 text-slate-400 text-xs font-bold uppercase tracking-wider font-body">
+                o ingresar URL
+              </span>
               <div class="flex-grow border-t border-slate-250"></div>
             </div>
             <div>
-              <label for="videoUrl" class="block text-xs font-body font-semibold text-slate-600 mb-2">URL del Video (MP4 directo o link externo)</label>
+              <label
+                for="videoUrl"
+                class="block text-xs font-body font-semibold text-slate-600 mb-2"
+              >
+                URL del Video (MP4 directo o link externo)
+              </label>
               <input
                 type="text"
                 id="videoUrl"
@@ -236,8 +311,13 @@ export default component$(() => {
             {/* Video Preview */}
             {videoPreview.value && (
               <div class="pt-4 border-t border-slate-200 flex flex-col items-center">
-                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 font-body block self-start">Vista previa del video:</span>
-                <div class="relative bg-black rounded-2xl overflow-hidden border border-slate-200 shadow-inner max-w-[180px]" style={{ aspectRatio: '9/16' }}>
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 font-body block self-start">
+                  Vista previa del video:
+                </span>
+                <div
+                  class="relative bg-black rounded-2xl overflow-hidden border border-slate-200 shadow-inner max-w-[180px]"
+                  style={{ aspectRatio: "9/16" }}
+                >
                   <video
                     src={videoPreview.value}
                     controls
@@ -251,25 +331,45 @@ export default component$(() => {
 
           {/* Thumbnail Section */}
           <div class="p-5 border border-slate-150 rounded-2xl bg-slate-50/50 space-y-4">
-            <h3 class="font-display font-bold text-navy-900 text-sm border-b border-slate-200 pb-2">Imagen de Portada (Miniatura)</h3>
+            <h3 class="font-display font-bold text-navy-900 text-sm border-b border-slate-200 pb-2">
+              Imagen de Portada (Miniatura)
+            </h3>
             <div>
-              <label for="thumbnailFile" class="block text-xs font-body font-semibold text-slate-600 mb-2">Subir Imagen Portada (Opcional)</label>
+              <label
+                for="thumbnailFile"
+                class="block text-xs font-body font-semibold text-slate-600 mb-2"
+              >
+                Subir Imagen Portada (JPG/PNG/WebP, máx{" "}
+                {formatMb(
+                  BLOB_PREFIXES["videos-verticales/thumbnail"].maxBytes,
+                )}
+                )
+              </label>
               <input
                 type="file"
                 id="thumbnailFile"
                 name="thumbnailFile"
-                accept="image/jpeg,image/png,image/webp"
+                accept={BLOB_PREFIXES[
+                  "videos-verticales/thumbnail"
+                ].contentTypes.join(",")}
                 onChange$={handleThumbnailFileChange$}
                 class="w-full border border-slate-250 bg-white rounded-xl px-4 py-2.5 text-sm outline-none font-body file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-navy-900 file:text-white file:cursor-pointer hover:file:bg-navy-800"
               />
             </div>
             <div class="relative flex py-2 items-center">
               <div class="flex-grow border-t border-slate-250"></div>
-              <span class="flex-shrink mx-4 text-slate-400 text-xs font-bold uppercase tracking-wider font-body">o ingresar URL</span>
+              <span class="flex-shrink mx-4 text-slate-400 text-xs font-bold uppercase tracking-wider font-body">
+                o ingresar URL
+              </span>
               <div class="flex-grow border-t border-slate-250"></div>
             </div>
             <div>
-              <label for="thumbnailUrl" class="block text-xs font-body font-semibold text-slate-600 mb-2">URL de la Imagen Portada (Opcional)</label>
+              <label
+                for="thumbnailUrl"
+                class="block text-xs font-body font-semibold text-slate-600 mb-2"
+              >
+                URL de la Imagen Portada (Opcional)
+              </label>
               <input
                 type="text"
                 id="thumbnailUrl"
@@ -283,8 +383,13 @@ export default component$(() => {
             {/* Thumbnail Preview */}
             {thumbnailPreview.value && (
               <div class="pt-4 border-t border-slate-200 flex flex-col items-center">
-                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 font-body block self-start">Vista previa de la portada:</span>
-                <div class="relative bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 shadow-md max-w-[180px]" style={{ aspectRatio: '9/16' }}>
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 font-body block self-start">
+                  Vista previa de la portada:
+                </span>
+                <div
+                  class="relative bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 shadow-md max-w-[180px]"
+                  style={{ aspectRatio: "9/16" }}
+                >
                   <img
                     src={thumbnailPreview.value}
                     alt="Vista previa de miniatura"
@@ -298,7 +403,12 @@ export default component$(() => {
           {/* Settings */}
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <label for="displayOrder" class="block text-xs font-bold text-slate-450 uppercase tracking-wider mb-2 font-body">Orden de Visualización</label>
+              <label
+                for="displayOrder"
+                class="block text-xs font-bold text-slate-450 uppercase tracking-wider mb-2 font-body"
+              >
+                Orden de Visualización
+              </label>
               <input
                 type="number"
                 id="displayOrder"
@@ -306,9 +416,11 @@ export default component$(() => {
                 value="0"
                 class="w-full bg-slate-50 border border-slate-200 focus:border-verde-500 rounded-xl px-4 py-2.5 text-sm outline-none transition-colors font-body"
               />
-              <p class="text-[10px] text-slate-450 mt-1 font-body">El número menor se renderiza primero.</p>
+              <p class="text-[10px] text-slate-450 mt-1 font-body">
+                El número menor se renderiza primero.
+              </p>
             </div>
-            
+
             <div class="flex flex-col justify-center">
               <label class="flex items-center gap-3 cursor-pointer">
                 <input
@@ -318,9 +430,13 @@ export default component$(() => {
                   checked
                   class="w-5 h-5 text-verde-500 rounded border-slate-300 focus:ring-verde-500 cursor-pointer"
                 />
-                <span class="text-sm font-semibold text-slate-700 font-body">Video Activo</span>
+                <span class="text-sm font-semibold text-slate-700 font-body">
+                  Video Activo
+                </span>
               </label>
-              <p class="text-[10px] text-slate-455 mt-1 font-body ml-8">Si está desmarcado, se oculta del sitio.</p>
+              <p class="text-[10px] text-slate-455 mt-1 font-body ml-8">
+                Si está desmarcado, se oculta del sitio.
+              </p>
             </div>
           </div>
 
@@ -331,16 +447,34 @@ export default component$(() => {
               disabled={createAction.isRunning || isUploading.value}
               class="inline-flex items-center justify-center gap-2 bg-verde-500 hover:bg-verde-600 text-white font-display text-sm font-bold px-6 py-3 rounded-xl shadow-cta hover:shadow-cta-hover transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed min-w-[180px]"
             >
-              {(createAction.isRunning || isUploading.value) ? (
+              {createAction.isRunning || isUploading.value ? (
                 <>
-                  <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg
+                    class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      class="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="4"
+                    ></circle>
+                    <path
+                      class="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
-                  Procesando/Creando...
+                  {uploadStage.value}
+                  {uploadStage.value.startsWith("Subiendo") &&
+                    ` ${uploadPercentage.value}%`}
                 </>
               ) : (
-                'Crear Video'
+                "Crear Video"
               )}
             </button>
             <Link
@@ -357,5 +491,5 @@ export default component$(() => {
 });
 
 export const head: DocumentHead = {
-  title: 'Nuevo Video Vertical — Mijal Salud Panel',
+  title: "Nuevo Video Vertical — Mijal Salud Panel",
 };
