@@ -27,10 +27,9 @@ export const Footer = component$(() => {
 
   return (
     <footer class="bg-navy-950 text-white">
-
       {/* Cuerpo del footer */}
-      <div class="container mx-auto px-6 lg:px-12 py-16">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+      <div class="container mx-auto px-6 py-16 lg:px-12 xl:pr-24">
+        <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {/* Columna 1: Marca */}
           <div class="sm:col-span-2 lg:col-span-1">
             <div class="flex items-center gap-3 mb-4">
@@ -43,8 +42,8 @@ export const Footer = component$(() => {
               />
             </div>
             <p class="text-white/60 font-body text-sm leading-relaxed mb-6">
-              Más de {new Date().getFullYear() - 2005} años brindando atención médica domiciliaria de
-              excelencia en Buenos Aires y el AMBA.
+              Más de {new Date().getFullYear() - 2005} años brindando atención
+              médica domiciliaria de excelencia en Buenos Aires y el AMBA.
             </p>
             <div class="flex items-center gap-3">
               <a
@@ -128,6 +127,44 @@ export const Footer = component$(() => {
               </a>
             </div>
           </div>
+
+          {/* Columna 4: Certificación de calidad */}
+          <div class="sm:col-span-2 lg:col-span-3 xl:col-span-1">
+            <h3 class="font-display font-semibold text-sm uppercase tracking-widest text-white/40 mb-5 sm:text-center xl:text-left">
+              Certificación
+            </h3>
+            <a
+              href="/certificado-iram-iso-9001-mijal-salud.pdf"
+              download="Mijal-Salud-Certificado-IRAM-ISO-9001-2015.pdf"
+              class="group block w-full max-w-[17rem] rounded-xl bg-white p-2.5 shadow-lg shadow-black/20 transition-transform duration-200 hover:-translate-y-1 sm:mx-auto xl:mx-0"
+              aria-label="Descargar certificado IRAM ISO 9001:2015 de Mijal Salud en PDF"
+            >
+              <img
+                src="/certificacion-iram-iso-9001.jpeg"
+                alt="Sello de certificación IRAM e IQNET de gestión de la calidad ISO 9001:2015"
+                class="block h-auto w-full"
+                width={584}
+                height={487}
+                loading="lazy"
+                decoding="async"
+              />
+              <span class="mt-2 flex items-center justify-between gap-2 border-t border-navy-900/10 px-1 pt-2 font-body text-xs font-semibold text-navy-900">
+                Descargar certificado
+                <svg
+                  class="h-4 w-4 shrink-0 text-verde-700"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" />
+                </svg>
+              </span>
+            </a>
+          </div>
         </div>
       </div>
 
@@ -136,7 +173,9 @@ export const Footer = component$(() => {
         <div class="container mx-auto px-6 lg:px-12 py-5">
           <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-white/40 text-xs font-body">
             <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center sm:text-left">
-              <span>© {year} Mijal Salud S.A. · Todos los derechos reservados</span>
+              <span>
+                © {year} Mijal Salud S.A. · Todos los derechos reservados
+              </span>
               <span class="hidden sm:inline">·</span>
               <a
                 href="/politicas-de-calidad"
